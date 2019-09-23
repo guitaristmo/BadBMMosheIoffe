@@ -5,18 +5,17 @@
 
 plugins {
     // Apply the java-library plugin to add support for Java Library
+    id 'java'
     id 'java-library'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-
 repositories {
-    // Use jcenter for resolving dependencies.
     jcenter()
+    mavenCentral()
 }
-
 
 dependencies {	    
 
@@ -27,8 +26,15 @@ dependencies {
     api group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 	implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa.modelgen', version: '2.4.2'
 	implementation group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.7.4'
-    
 	implementation group: 'org.apache.derby', name: 'derby', version: '10.13.1.1'
+
+    //testing
+    testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+}
+
+test{
+    useJUnitPlatform()
+    testLogging {events "passed", "skipped", "failed"}
 }
 
 jar {
