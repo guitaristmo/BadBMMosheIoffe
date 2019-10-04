@@ -27,7 +27,6 @@ dependencies {
 	implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa.modelgen', version: '2.4.2'
 	implementation group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.7.4'
 	implementation group: 'org.apache.derby', name: 'derby', version: '10.13.1.1'
-
     //testing
     testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 }
