@@ -205,9 +205,11 @@ public class MyApp {
 
         // populate run table with saved runs from db
         System.out.println("loading stored run data");
-//        DiskRun.findAll().stream().forEach((DiskRun run) -> {
-//            display.addRun(run);
-//        });
+        System.out.println("XXXX Java version is "  + System.getProperty("java.version"));
+
+        DiskRun.findAll().stream().forEach((DiskRun run) -> {
+            display.addRun(run);
+        });
     }
 
     public void clearSavedRuns() {

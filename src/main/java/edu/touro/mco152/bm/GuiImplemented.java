@@ -5,6 +5,7 @@ import edu.touro.mco152.bm.persist.DiskRun;
 import edu.touro.mco152.bm.ui.MyMainFrame;
 import edu.touro.mco152.bm.ui.MyRunPanel;
 import edu.touro.mco152.bm.ui.MySelectFrame;
+import javafx.beans.binding.ObjectExpression;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -22,7 +23,7 @@ import java.util.List;
 //import static edu.touro.mco152.bm.App.dataDir;
 //import static edu.touro.mco152.bm.App.worker;
 
-public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements GuiInterface<DiskMark>
+public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements GuiInterface
 {
     public ChartPanel chartPanel = null;
     public MyMainFrame mainFrame = null;
@@ -202,7 +203,17 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     public void iExecute() { execute(); }
 
     @Override
-    public void iPublish(DiskMark... marks) { publish(marks); }
+    public void iPublish(Object... marks)
+    {
+        //I would use the following line but it wasn't casting properly
+        //publish((DiskMark[]) marks);
+
+        //so this is my version and it works
+        DiskMark[] mark = new DiskMark[marks.length];
+        for (int index = 0; index < marks.length; index++)
+            mark[index] = (DiskMark) marks[index];
+        publish(mark);
+    }
 
     @Override
     public void iCancel(boolean cancel) { cancel(cancel); }
@@ -276,7 +287,7 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
 
     @Override
     public void process(List<DiskMark> markList) {
-        markList.stream().forEach((m) -> {
+        markList.stream().forEach( (m) -> {
             if (m.type==DiskMark.MarkType.WRITE) {
                 addWriteMark(m);
             } else {

@@ -5,7 +5,7 @@ import edu.touro.mco152.bm.persist.DiskRun;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-public interface GuiInterface<V>
+public interface GuiInterface
 {
     //from Gui
     public void updateLegend();
@@ -35,7 +35,7 @@ public interface GuiInterface<V>
 
     //from Swing Worker
     public boolean iIsCancelled();
-    public void iPublish(V... chunks);
+    public void iPublish(Object... chunks);
     public void iCancel(boolean cancel);
     public void iAddPropertyChangeListener(PropertyChangeListener listener);
     public void iSetProgress(int progress);
@@ -54,6 +54,6 @@ public interface GuiInterface<V>
     public void setWorker(MyDiskWorker worker);
 
     //from DiskWorker
-    public void process(List<DiskMark> markList);
-    public void done();
+//    public void process(List<DiskMark> markList);
+//    public void done();
 }
