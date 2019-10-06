@@ -40,7 +40,7 @@ public interface GuiInterface
     public void iAddPropertyChangeListener(PropertyChangeListener listener);
     public void iSetProgress(int progress);
     public void iSetProgressBarString(String progress);
-    public void iExecute();
+    public void iExecute(boolean firstRun);
 
 
     //from App

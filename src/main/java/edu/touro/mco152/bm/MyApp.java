@@ -56,8 +56,8 @@ public class MyApp {
     public int numOfBlocks = 32;     // desired number of blocks
     public int blockSizeKb = 512;    // size of a block in KBs
 
+    public boolean firstRun = true;
     public MyDiskWorker worker;
-    //public static DiskWorker worker = null;
     public int nextMarkNumber = 1;   // number of the next mark
     public double wMax = -1, wMin = -1, wAvg = -1;
     public double rMax = -1, rMin = -1, rAvg = -1;
@@ -70,7 +70,8 @@ public class MyApp {
         display.setUpDisplay();
         /* Create and display the form */
         //java.awt.EventQueue.invokeLater(App::init);
-        java.awt.EventQueue.invokeLater(this::init);
+        //java.awt.EventQueue.invokeLater(this::init);
+        init();
     }
 
     /**
@@ -218,11 +219,6 @@ public class MyApp {
         loadSavedRuns();
     }
 
-    //---------------------------------not Apps job to display messages
-//    public static void msg(String message) {
-//        Gui.mainFrame.msg(message);
-//    }
-
     public void cancelBenchmark() {
         if (worker == null) {
             display.msg("worker is null abort...");
@@ -237,6 +233,7 @@ public class MyApp {
         if (state == State.DISK_TEST_STATE) {
             //if (!worker.isCancelled() && !worker.isDone()) {
             display.msg("Test in progress, aborting...");
+            System.out.println("AppInstance: Other test still active");
             return;
             //}
         }
@@ -249,6 +246,7 @@ public class MyApp {
 
         //3. update state
         state = State.DISK_TEST_STATE;
+        System.out.println("AppInstance: started new benchmark");
 
         display.adjustSensitivity();
 
@@ -270,11 +268,17 @@ public class MyApp {
         //7. start disk worker thread
 
         //worker = new DiskWorker();
-        worker = new MyDiskWorker(this, display);
-        display.setWorker(worker);
+        if (firstRun)
+        {
+            worker = new MyDiskWorker(this, display);
+            display.setWorker(worker);
+        }
 
- //this is gui stuff
+
+
  //make a GuiInterface.initiate
+        if(firstRun)
+        {
         display.iAddPropertyChangeListener((final PropertyChangeEvent event) -> {
             switch (event.getPropertyName()) {
                 case "progress":
@@ -294,7 +298,9 @@ public class MyApp {
                     break;
             }
         });
-        display.iExecute();
+        }
+        display.iExecute(firstRun);
+        firstRun = false;
     }
 
     public long targetMarkSizeKb() {

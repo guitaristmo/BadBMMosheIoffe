@@ -621,8 +621,10 @@ public final class MyMainFrame extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         if (appInstance.state==MyApp.State.DISK_TEST_STATE) {
+            System.out.println("MainFrame ActionListener: About to cancel Benchmark");
             appInstance.cancelBenchmark();
         } else if (appInstance.state==MyApp.State.IDLE_STATE) {
+            System.out.println("MainFrame ActionListener: About to start Benchmark");
             applyTestParams();
             appInstance.startBenchmark();
         }

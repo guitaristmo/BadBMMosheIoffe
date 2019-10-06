@@ -200,7 +200,22 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     }
 
     @Override
-    public void iExecute() { execute(); }
+    public void iExecute(boolean firstRun) {
+        if(firstRun)
+            execute();
+        else
+        {
+            try
+            {
+                worker.newDoInBackground();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("display.iExecute: about to call SwingWorker.execute");
+
+    }
 
     @Override
     public void iPublish(Object... marks)
@@ -283,7 +298,10 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
 
 
     @Override
-    protected Boolean doInBackground() throws Exception { return worker.newDoInBackground(); }
+    protected Boolean doInBackground() throws Exception {
+        System.out.println("display.doInBackground: about to call worker.newDoInBackground");
+        return worker.newDoInBackground();
+    }
 
     @Override
     public void process(List<DiskMark> markList) {
