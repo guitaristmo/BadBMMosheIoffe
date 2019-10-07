@@ -23,16 +23,16 @@ public class GuiImplemented implements GuiInterface
     public ChartPanel chartPanel = null;
     public MyMainFrame mainFrame = null;
     public MySelectFrame selFrame = null;
-    public XYSeries wSeries = null;
-    public XYSeries wAvgSeries = null;
-    public XYSeries wMaxSeries = null;
-    public XYSeries wMinSeries = null;
-    public XYSeries rSeries = null;
-    public XYSeries rAvgSeries = null;
-    public XYSeries rMaxSeries = null;
-    public XYSeries rMinSeries = null;
-    public JFreeChart chart = null;
-    public JProgressBar progressBar = null;
+    private XYSeries wSeries = null;
+    private XYSeries wAvgSeries = null;
+    private XYSeries wMaxSeries = null;
+    private XYSeries wMinSeries = null;
+    private XYSeries rSeries = null;
+    private XYSeries rAvgSeries = null;
+    private XYSeries rMaxSeries = null;
+    private XYSeries rMinSeries = null;
+    private JFreeChart chart = null;
+    private JProgressBar progressBar = null;
     public MyRunPanel runPanel = null;
 
     private MyDiskWorker worker = null;
@@ -278,27 +278,6 @@ public class GuiImplemented implements GuiInterface
         firstRun = false;
         mySwing.execute();
     }
-
-    protected Boolean doInBackground() throws Exception { return worker.newDoInBackground(); }
-
-//    public void process(List<DiskMark> markList) {
-//        markList.stream().forEach( (m) -> {
-//            if (m.type==DiskMark.MarkType.WRITE) {
-//                addWriteMark(m);
-//            } else {
-//                addReadMark(m);
-//            }
-//        });
-//    }
-//
-//    public void done() {
-//        System.out.println("display.done was called");
-//        if (mainApp.autoRemoveData) {
-//            Util.deleteDirectory(mainApp.dataDir);
-//        }
-//        mainApp.state = MyApp.State.IDLE_STATE;
-//        mainFrame.adjustSensitivity();
-//    }
 }
 
 

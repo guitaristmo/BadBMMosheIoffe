@@ -13,47 +13,27 @@ public interface GuiInterface
 
 
     //for DiskWorker
-    public void setTitle(String title);
-    public void addRun(DiskRun run);
-    public void showFileRenamingMessage();
+    void setTitle(String title);
+    void addRun(DiskRun run);
+    void showFileRenamingMessage();
 
-
-//    public ChartPanel chartPanel = null;
-//    public MainFrame mainFrame = null;
-//    public SelectFrame selFrame = null;
-//    public XYSeries wSeries = null;
-//    public XYSeries wAvgSeries = null;
-//    public XYSeries wMaxSeries = null;
-//    public XYSeries wMinSeries = null;
-//    public XYSeries rSeries = null;
-//    public XYSeries rAvgSeries = null;
-//    public XYSeries rMaxSeries = null;
-//    public XYSeries rMinSeries = null;
-//    public JFreeChart chart = null;
-//    public JProgressBar progressBar = null;
-//    public RunPanel runPanel = null;
 
     //from Swing Worker
-    public boolean iIsCancelled();
-    public void iPublish(Object... chunks);
-    public void iCancel(boolean cancel);
-    public void iAddPropertyChangeListener(PropertyChangeListener listener);
-    public void iSetProgress(int progress);
-    public void iSetProgressBarString(String progress);
-    public void iExecute();
+    boolean iIsCancelled();
+    void iPublish(Object... chunks);
+    void iCancel(boolean cancel);
+    void iAddPropertyChangeListener(PropertyChangeListener listener);
+    void iSetProgress(int progress);
+    void iSetProgressBarString(String progress);
+    void iExecute();
 
 
-    //from App
-    public void msg(String message);
+    //from app
+    void msg(String message);
+    void setUpDisplay();
+    void init();
+    void clearRuns();
+    void adjustSensitivity();
+    void setWorker(MyDiskWorker worker);
 
-    //for App
-    public void setUpDisplay();
-    public void init();
-    public void clearRuns();
-    public void adjustSensitivity();
-    public void setWorker(MyDiskWorker worker);
-
-    //from DiskWorker
-//    public void process(List<DiskMark> markList);
-//    public void done();
 }

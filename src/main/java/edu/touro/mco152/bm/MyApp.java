@@ -267,8 +267,11 @@ public class MyApp {
         //7. start disk worker thread
 
         //worker = new DiskWorker();
-        worker = new MyDiskWorker(this, display);
-        display.setWorker(worker);
+        if (worker == null)
+        {
+            worker = new MyDiskWorker(this, display);
+            display.setWorker(worker);
+        }
 
 
         display.iAddPropertyChangeListener((final PropertyChangeEvent event) ->

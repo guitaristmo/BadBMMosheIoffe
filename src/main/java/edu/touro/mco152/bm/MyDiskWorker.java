@@ -37,10 +37,10 @@ import edu.touro.mco152.bm.persist.EM;
  */
 public class MyDiskWorker
 {
-    GuiInterface user;
-    MyApp appInstance;
-    EntityManager em;
-    DiskRun run;
+    private GuiInterface user;
+    private MyApp appInstance;
+    private EntityManager em;
+    private DiskRun run;
     private boolean firstPass = true;
 
     public MyDiskWorker(MyApp appInstance, GuiInterface user)
@@ -49,7 +49,7 @@ public class MyDiskWorker
         this.user = user;
     }
 
-    protected Boolean newDoInBackground() throws Exception
+    protected Boolean runBenchmark() throws Exception
     {
         System.out.println("*** starting new worker thread in MyDiskRun");
         user.msg("Running readTest "+appInstance.readTest+"   writeTest "+appInstance.writeTest);
@@ -124,9 +124,11 @@ public class MyDiskWorker
                     }
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
                 }
+        //only possible exception is FileNotFound. Second catch block is redundant
+//                catch (IOException ex) {
+//                    Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
+//                }
                 long endTime = System.nanoTime();
                 long elapsedTimeNs = endTime - startTime;
                 double sec = (double)elapsedTimeNs / (double)1000000000;
@@ -191,9 +193,12 @@ public class MyDiskWorker
                     }
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
                 }
+        //only possible exception is FileNotFound. Second catch block is redundant
+//                catch (IOException ex) {
+//                    Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+
                 long endTime = System.nanoTime();
                 long elapsedTimeNs = endTime - startTime;
                 double sec = (double)elapsedTimeNs / (double)1000000000;
