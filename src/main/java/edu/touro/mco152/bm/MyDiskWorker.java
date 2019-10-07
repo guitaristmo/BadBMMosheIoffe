@@ -39,6 +39,9 @@ public class MyDiskWorker
 {
     GuiInterface user;
     MyApp appInstance;
+    EntityManager em;
+    DiskRun run;
+    private boolean firstPass = true;
 
     public MyDiskWorker(MyApp appInstance, GuiInterface user)
     {
@@ -46,8 +49,8 @@ public class MyDiskWorker
         this.user = user;
     }
 
-    protected Boolean newDoInBackground() throws Exception {
-
+    protected Boolean newDoInBackground() throws Exception
+    {
         System.out.println("*** starting new worker thread in MyDiskRun");
         user.msg("Running readTest "+appInstance.readTest+"   writeTest "+appInstance.writeTest);
         user.msg("num files: "+appInstance.numOfMarks+", num blks: "+appInstance.numOfBlocks
@@ -71,10 +74,9 @@ public class MyDiskWorker
         }
 
         DiskMark wMark, rMark;
-
         user.updateLegend();
 
-        if (appInstance.autoReset == true) {
+        if (appInstance.autoReset) {
             appInstance.resetTestData();
             user.resetTestData();
         }
@@ -82,22 +84,16 @@ public class MyDiskWorker
         int startFileNum = appInstance.nextMarkNumber;
 
         if(appInstance.writeTest) {
-            DiskRun run = new DiskRun(DiskRun.IOMode.WRITE, appInstance.blockSequence);
-            run.setNumMarks(appInstance.numOfMarks);
-            run.setNumBlocks(appInstance.numOfBlocks);
-            run.setBlockSize(appInstance.blockSizeKb);
-            run.setTxSize(appInstance.targetTxSizeKb());
-            run.setDiskInfo(Util.getDiskInfo(appInstance.dataDir));
+            run = new DiskRun(DiskRun.IOMode.WRITE, appInstance.blockSequence);
+            setDiskRunStuff();
 
-            user.msg("disk info: ("+ run.getDiskInfo()+")");
-            user.setTitle(run.getDiskInfo());
 
-            if (appInstance.multiFile == false) {
+            if (!appInstance.multiFile) {
                 appInstance.testFile = new File(appInstance.dataDir.getAbsolutePath()+File.separator+"testdata.jdm");
             }
             for (int m=startFileNum; m<startFileNum+appInstance.numOfMarks && !user.iIsCancelled(); m++) {
 
-                if (appInstance.multiFile == true) {
+                if (appInstance.multiFile) {
                     appInstance.testFile = new File(appInstance.dataDir.getAbsolutePath()
                             + File.separator+"testdata"+m+".jdm");
                 }
@@ -148,10 +144,8 @@ public class MyDiskWorker
                 run.setEndTime(new Date());
             }
 
-            EntityManager em = EM.getEntityManager();
-            em.getTransaction().begin();
-            em.persist(run);
-            em.getTransaction().commit();
+            //Check out the comment in the read section
+            persistRun(run);
 
             user.addRun(run);
         }
@@ -163,23 +157,16 @@ public class MyDiskWorker
         }
 
         if (appInstance.readTest) {
-            DiskRun run = new DiskRun(DiskRun.IOMode.READ, appInstance.blockSequence);
-            run.setNumMarks(appInstance.numOfMarks);
-            run.setNumBlocks(appInstance.numOfBlocks);
-            run.setBlockSize(appInstance.blockSizeKb);
-            run.setTxSize(appInstance.targetTxSizeKb());
-            run.setDiskInfo(Util.getDiskInfo(appInstance.dataDir));
-
-            user.msg("disk info: ("+ run.getDiskInfo()+")");
-
-            user.setTitle(run.getDiskInfo());
+            run = new DiskRun(DiskRun.IOMode.READ, appInstance.blockSequence);
+            setDiskRunStuff();
 
             for (int m=startFileNum; m<startFileNum+appInstance.numOfMarks && !user.iIsCancelled(); m++) {
 
-                if (appInstance.multiFile == true) {
+                if (appInstance.multiFile) {
                     appInstance.testFile = new File(appInstance.dataDir.getAbsolutePath()
                             + File.separator+"testdata"+m+".jdm");
                 }
+
                 rMark = new DiskMark(READ);
                 rMark.setMarkNum(m);
                 long startTime = System.nanoTime();
@@ -221,18 +208,45 @@ public class MyDiskWorker
                 run.setRunMin(rMark.getCumMin());
                 run.setRunAvg(rMark.getCumAvg());
                 run.setEndTime(new Date());
+                System.out.println("worker: end of for loop. mark number: " + m);
             }
+            System.out.println("worker: finished reading for loop");
 
-            EntityManager em = EM.getEntityManager();
-            em.getTransaction().begin();
-            em.persist(run);
-            em.getTransaction().commit();
+            //I wrote this to separate out the em stuff - its glitching up on the second run DiskWorker
+            persistRun(run);
 
             user.addRun(run);
         }
         appInstance.nextMarkNumber += appInstance.numOfMarks;
         return true;
     }
+
+    private void setDiskRunStuff()
+    {
+        run.setNumMarks(appInstance.numOfMarks);
+        run.setNumBlocks(appInstance.numOfBlocks);
+        run.setBlockSize(appInstance.blockSizeKb);
+        run.setTxSize(appInstance.targetTxSizeKb());
+        run.setDiskInfo(Util.getDiskInfo(appInstance.dataDir));
+        user.msg("disk info: ("+ run.getDiskInfo()+")");
+        user.setTitle(run.getDiskInfo());
+    }
+
+
+
+    private void persistRun(DiskRun run)
+    {
+        if(firstPass)
+        {
+            System.out.println("worker: about to get em");
+            em = EM.getEntityManager();
+            em.getTransaction().begin();
+            firstPass = false;
+            em.persist(run);
+            em.getTransaction().commit();
+        }
+    }
+
 }
 
 

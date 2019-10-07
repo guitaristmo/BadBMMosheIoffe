@@ -39,6 +39,7 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     public JFreeChart chart = null;
     public JProgressBar progressBar = null;
     public MyRunPanel runPanel = null;
+
     public MyDiskWorker worker = null;
     public MyApp mainApp = null;
 
@@ -109,7 +110,7 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
         return chartPanel;
     }
 
-    private void addWriteMark(DiskMark mark) {
+    void addWriteMark(DiskMark mark) {
         wSeries.add(mark.getMarkNum(), mark.getBwMbSec());
         wAvgSeries.add(mark.getMarkNum(), mark.getCumAvg());
         if (mainApp.showMaxMin) {
@@ -120,7 +121,7 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
         System.out.println(mark.toString());
     }
 
-    private void addReadMark(DiskMark mark) {
+    void addReadMark(DiskMark mark) {
         rSeries.add(mark.getMarkNum(), mark.getBwMbSec());
         rAvgSeries.add(mark.getMarkNum(), mark.getCumAvg());
         if (mainApp.showMaxMin) {
@@ -200,24 +201,6 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     }
 
     @Override
-    public void iExecute(boolean firstRun) {
-        if(firstRun)
-            execute();
-        else
-        {
-            try
-            {
-                worker.newDoInBackground();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("display.iExecute: about to call SwingWorker.execute");
-
-    }
-
-    @Override
     public void iPublish(Object... marks)
     {
         //I would use the following line but it wasn't casting properly
@@ -293,15 +276,11 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     @Override
     public void setWorker(MyDiskWorker worker){this.worker = worker;}
 
-
-
-
+    @Override
+    public void iExecute() { execute(); }
 
     @Override
-    protected Boolean doInBackground() throws Exception {
-        System.out.println("display.doInBackground: about to call worker.newDoInBackground");
-        return worker.newDoInBackground();
-    }
+    protected Boolean doInBackground() throws Exception { return worker.newDoInBackground(); }
 
     @Override
     public void process(List<DiskMark> markList) {
@@ -316,6 +295,7 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
 
     @Override
     public void done() {
+        System.out.println("display.done was called");
         if (mainApp.autoRemoveData) {
             Util.deleteDirectory(mainApp.dataDir);
         }

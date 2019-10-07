@@ -56,7 +56,6 @@ public class MyApp {
     public int numOfBlocks = 32;     // desired number of blocks
     public int blockSizeKb = 512;    // size of a block in KBs
 
-    public boolean firstRun = true;
     public MyDiskWorker worker;
     public int nextMarkNumber = 1;   // number of the next mark
     public double wMax = -1, wMin = -1, wAvg = -1;
@@ -268,18 +267,12 @@ public class MyApp {
         //7. start disk worker thread
 
         //worker = new DiskWorker();
-        if (firstRun)
+        worker = new MyDiskWorker(this, display);
+        display.setWorker(worker);
+
+
+        display.iAddPropertyChangeListener((final PropertyChangeEvent event) ->
         {
-            worker = new MyDiskWorker(this, display);
-            display.setWorker(worker);
-        }
-
-
-
- //make a GuiInterface.initiate
-        if(firstRun)
-        {
-        display.iAddPropertyChangeListener((final PropertyChangeEvent event) -> {
             switch (event.getPropertyName()) {
                 case "progress":
                     int value = (Integer)event.getNewValue();
@@ -298,9 +291,7 @@ public class MyApp {
                     break;
             }
         });
-        }
-        display.iExecute(firstRun);
-        firstRun = false;
+        display.iExecute();
     }
 
     public long targetMarkSizeKb() {
