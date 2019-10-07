@@ -72,7 +72,7 @@ public class MySelectFrame extends javax.swing.JFrame {
         switch (evt.getActionCommand()) {
             case "ApproveSelection":
                 mainApp.locationDir = jFileChooser1.getSelectedFile();
-                mainApp.saveConfig();
+                mainApp.propManager.saveConfig();
                 mainFrame.setLocation(mainApp.locationDir.getAbsolutePath());
                 break;
             case "CancelSelection":

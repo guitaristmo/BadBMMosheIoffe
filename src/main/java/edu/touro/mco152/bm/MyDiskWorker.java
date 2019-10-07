@@ -1,39 +1,25 @@
 
 package edu.touro.mco152.bm;
 
-//import static edu.touro.mco152.bm.App.msg;
-
-
-
 import static edu.touro.mco152.bm.MyApp.KILOBYTE;
 import static edu.touro.mco152.bm.MyApp.MEGABYTE;
-//import static edu.touro.mco152.bm.MyApp.blockSizeKb;
-//import static edu.touro.mco152.bm.MyApp.dataDir;
-//import static edu.touro.mco152.bm.MyApp.numOfBlocks;
-//import static edu.touro.mco152.bm.MyApp.numOfMarks;
-//import static edu.touro.mco152.bm.MyApp.testFile;
 import static edu.touro.mco152.bm.DiskMark.MarkType.READ;
 import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-
 import edu.touro.mco152.bm.persist.DiskRun;
 import edu.touro.mco152.bm.persist.EM;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+
 
 /**
- * Thread running the disk benchmarking. only one of these threads can run at
- * once.
+ * Class running the disk benchmarking.
+ *
  */
 public class MyDiskWorker
 {
@@ -85,8 +71,7 @@ public class MyDiskWorker
 
         if(appInstance.writeTest) {
             run = new DiskRun(DiskRun.IOMode.WRITE, appInstance.blockSequence);
-            setDiskRunStuff();
-
+            initializeDiskRun();
 
             if (!appInstance.multiFile) {
                 appInstance.testFile = new File(appInstance.dataDir.getAbsolutePath()+File.separator+"testdata.jdm");
@@ -160,7 +145,7 @@ public class MyDiskWorker
 
         if (appInstance.readTest) {
             run = new DiskRun(DiskRun.IOMode.READ, appInstance.blockSequence);
-            setDiskRunStuff();
+            initializeDiskRun();
 
             for (int m=startFileNum; m<startFileNum+appInstance.numOfMarks && !user.iIsCancelled(); m++) {
 
@@ -226,7 +211,7 @@ public class MyDiskWorker
         return true;
     }
 
-    private void setDiskRunStuff()
+    private void initializeDiskRun()
     {
         run.setNumMarks(appInstance.numOfMarks);
         run.setNumBlocks(appInstance.numOfBlocks);

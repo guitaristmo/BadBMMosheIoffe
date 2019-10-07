@@ -5,38 +5,35 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingWorker.StateValue;
-import edu.touro.mco152.bm.ui.MySelectFrame;
-import edu.touro.mco152.bm.persist.DiskRun;
-//import edu.touro.mco152.bm.ui.Gui;
 
+import edu.touro.mco152.bm.persist.PropertiesManager;
+import edu.touro.mco152.bm.persist.DiskRun;
 
 /**
  * Primary class for global variables.
  */
 public class MyApp {
 
-    public GuiInterface display;
+    private GuiInterface display;
+    public PropertiesManager propManager;
+    public MyDiskWorker worker;
+
 
     public static final String APP_CACHE_DIR = System.getProperty("user.home") + File.separator + ".jDiskMark";
-    public static final String PROPERTIESFILE = "jdm.properties";
     public static final String DATADIRNAME = "jDiskMarkData";
     public static final int MEGABYTE = 1024 * 1024;
     public static final int KILOBYTE = 1024;
-    public static final int IDLE_STATE = 0;
-    public static final int DISK_TEST_STATE = 1;
+//    public static final int IDLE_STATE = 0;
+//    public static final int DISK_TEST_STATE = 1;
 
     public enum State {IDLE_STATE, DISK_TEST_STATE};
     public State state = State.IDLE_STATE;
 
-    public Properties p;
     public File locationDir = null;
     public File dataDir = null;
     public File testFile = null;
@@ -56,7 +53,6 @@ public class MyApp {
     public int numOfBlocks = 32;     // desired number of blocks
     public int blockSizeKb = 512;    // size of a block in KBs
 
-    public MyDiskWorker worker;
     public int nextMarkNumber = 1;   // number of the next mark
     public double wMax = -1, wMin = -1, wAvg = -1;
     public double rMax = -1, rMin = -1, rAvg = -1;
@@ -65,12 +61,23 @@ public class MyApp {
 
     public MyApp()
     {
+        propManager = new PropertiesManager(this);
+        propManager.loadConfig();
+        System.out.println(this.getConfigString());
+
+        // configure the embedded DB in .jDiskMark
+        System.setProperty("derby.system.home", APP_CACHE_DIR);
+
+        //initialize gui
         display = new GuiImplemented(this);
-        display.setUpDisplay();
-        /* Create and display the form */
-        //java.awt.EventQueue.invokeLater(App::init);
-        //java.awt.EventQueue.invokeLater(this::init);
-        init();
+        display.init();
+        loadSavedRuns();
+
+        // save configuration on exit...
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {propManager.saveConfig(); }
+        });
     }
 
     /**
@@ -99,89 +106,69 @@ public class MyApp {
         return version;
     }
 
-    /**
-     * Initialize the GUI Application.
-     */
-    public void init() {
-        p = new Properties();
-        loadConfig();
-        System.out.println(this.getConfigString());
 
-        // configure the embedded DB in .jDiskMark
-        System.setProperty("derby.system.home", APP_CACHE_DIR);
+//    public void loadConfig() {
+//        File pFile = new File(PROPERTIESFILE);
+//        if (!pFile.exists()) { return; }
+//        try {
+//            InputStream is = new FileInputStream(pFile);
+//            p.load(is);
+//        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        String value;
+//        value = p.getProperty("locationDir", System.getProperty("user.home"));
+//        locationDir = new File(value);
+//        value = p.getProperty("multiFile", String.valueOf(multiFile));
+//        multiFile = Boolean.valueOf(value);
+//        value = p.getProperty("autoRemoveData", String.valueOf(autoRemoveData));
+//        autoRemoveData = Boolean.valueOf(value);
+//        value = p.getProperty("autoReset", String.valueOf(autoReset));
+//        autoReset = Boolean.valueOf(value);
+//        value = p.getProperty("blockSequence", String.valueOf(blockSequence));
+//        blockSequence = DiskRun.BlockSequence.valueOf(value);
+//        value = p.getProperty("showMaxMin", String.valueOf(showMaxMin));
+//        showMaxMin = Boolean.valueOf(value);
+//        value = p.getProperty("numOfFiles", String.valueOf(numOfMarks));
+//        numOfMarks = Integer.valueOf(value);
+//        value = p.getProperty("numOfBlocks", String.valueOf(numOfBlocks));
+//        numOfBlocks = Integer.valueOf(value);
+//        value = p.getProperty("blockSizeKb", String.valueOf(blockSizeKb));
+//        blockSizeKb = Integer.valueOf(value);
+//        value = p.getProperty("writeTest", String.valueOf(writeTest));
+//        writeTest = Boolean.valueOf(value);
+//        value = p.getProperty("readTest", String.valueOf(readTest));
+//        readTest = Boolean.valueOf(value);
+//        value = p.getProperty("writeSyncEnable", String.valueOf(writeSyncEnable));
+//        writeSyncEnable = Boolean.valueOf(value);
+//    }
+//
+//    public void saveConfig() {
+//        p.setProperty("locationDir", this.locationDir.getAbsolutePath());
+//        p.setProperty("multiFile", String.valueOf(multiFile));
+//        p.setProperty("autoRemoveData", String.valueOf(autoRemoveData));
+//        p.setProperty("autoReset", String.valueOf(autoReset));
+//        p.setProperty("blockSequence", String.valueOf(blockSequence));
+//        p.setProperty("showMaxMin", String.valueOf(showMaxMin));
+//        p.setProperty("numOfFiles", String.valueOf(numOfMarks));
+//        p.setProperty("numOfBlocks", String.valueOf(numOfBlocks));
+//        p.setProperty("blockSizeKb", String.valueOf(blockSizeKb));
+//        p.setProperty("writeTest", String.valueOf(writeTest));
+//        p.setProperty("readTest", String.valueOf(readTest));
+//        p.setProperty("writeSyncEnable", String.valueOf(writeSyncEnable));
+//
+//        try {
+//            OutputStream out = new FileOutputStream(new File(PROPERTIESFILE));
+//            p.store(out, "jDiskMark Properties File");
+//        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(MySelectFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch  (IOException ex) {
+//            Logger.getLogger(MySelectFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
-        //initialize gui
-        display.init();
-
-        loadSavedRuns();
-        // save configuration on exit...
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {saveConfig(); }
-        });
-    }
-
-    public void loadConfig() {
-        File pFile = new File(PROPERTIESFILE);
-        if (!pFile.exists()) { return; }
-        try {
-            InputStream is = new FileInputStream(pFile);
-            p.load(is);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String value;
-        value = p.getProperty("locationDir", System.getProperty("user.home"));
-        locationDir = new File(value);
-        value = p.getProperty("multiFile", String.valueOf(multiFile));
-        multiFile = Boolean.valueOf(value);
-        value = p.getProperty("autoRemoveData", String.valueOf(autoRemoveData));
-        autoRemoveData = Boolean.valueOf(value);
-        value = p.getProperty("autoReset", String.valueOf(autoReset));
-        autoReset = Boolean.valueOf(value);
-        value = p.getProperty("blockSequence", String.valueOf(blockSequence));
-        blockSequence = DiskRun.BlockSequence.valueOf(value);
-        value = p.getProperty("showMaxMin", String.valueOf(showMaxMin));
-        showMaxMin = Boolean.valueOf(value);
-        value = p.getProperty("numOfFiles", String.valueOf(numOfMarks));
-        numOfMarks = Integer.valueOf(value);
-        value = p.getProperty("numOfBlocks", String.valueOf(numOfBlocks));
-        numOfBlocks = Integer.valueOf(value);
-        value = p.getProperty("blockSizeKb", String.valueOf(blockSizeKb));
-        blockSizeKb = Integer.valueOf(value);
-        value = p.getProperty("writeTest", String.valueOf(writeTest));
-        writeTest = Boolean.valueOf(value);
-        value = p.getProperty("readTest", String.valueOf(readTest));
-        readTest = Boolean.valueOf(value);
-        value = p.getProperty("writeSyncEnable", String.valueOf(writeSyncEnable));
-        writeSyncEnable = Boolean.valueOf(value);
-    }
-
-    public void saveConfig() {
-        p.setProperty("locationDir", this.locationDir.getAbsolutePath());
-        p.setProperty("multiFile", String.valueOf(multiFile));
-        p.setProperty("autoRemoveData", String.valueOf(autoRemoveData));
-        p.setProperty("autoReset", String.valueOf(autoReset));
-        p.setProperty("blockSequence", String.valueOf(blockSequence));
-        p.setProperty("showMaxMin", String.valueOf(showMaxMin));
-        p.setProperty("numOfFiles", String.valueOf(numOfMarks));
-        p.setProperty("numOfBlocks", String.valueOf(numOfBlocks));
-        p.setProperty("blockSizeKb", String.valueOf(blockSizeKb));
-        p.setProperty("writeTest", String.valueOf(writeTest));
-        p.setProperty("readTest", String.valueOf(readTest));
-        p.setProperty("writeSyncEnable", String.valueOf(writeSyncEnable));
-
-        try {
-            OutputStream out = new FileOutputStream(new File(PROPERTIESFILE));
-            p.store(out, "jDiskMark Properties File");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MySelectFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch  (IOException ex) {
-            Logger.getLogger(MySelectFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     public String getConfigString() {
         StringBuilder sb = new StringBuilder();
@@ -265,14 +252,11 @@ public class MyApp {
         if (dataDir.exists() == false) { dataDir.mkdirs(); }
 
         //7. start disk worker thread
-
-        //worker = new DiskWorker();
         if (worker == null)
         {
             worker = new MyDiskWorker(this, display);
             display.setWorker(worker);
         }
-
 
         display.iAddPropertyChangeListener((final PropertyChangeEvent event) ->
         {
@@ -297,13 +281,9 @@ public class MyApp {
         display.iExecute();
     }
 
-    public long targetMarkSizeKb() {
-        return blockSizeKb * numOfBlocks;
-    }
+    public long targetMarkSizeKb() { return blockSizeKb * numOfBlocks; }
 
-    public long targetTxSizeKb() {
-        return blockSizeKb * numOfBlocks * numOfMarks;
-    }
+    public long targetTxSizeKb() { return blockSizeKb * numOfBlocks * numOfMarks; }
 
     public void updateMetrics(DiskMark mark) {
         if (mark.type==DiskMark.MarkType.WRITE) {
@@ -341,9 +321,7 @@ public class MyApp {
         }
     }
 
-    public void resetSequence() {
-        nextMarkNumber = 1;
-    }
+    public void resetSequence() { nextMarkNumber = 1; }
 
     public void resetTestData() {
         nextMarkNumber = 1;

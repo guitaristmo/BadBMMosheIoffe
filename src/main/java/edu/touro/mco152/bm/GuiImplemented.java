@@ -3,7 +3,7 @@ package edu.touro.mco152.bm;
 import edu.touro.mco152.bm.persist.DiskRun;
 import edu.touro.mco152.bm.ui.MyMainFrame;
 import edu.touro.mco152.bm.ui.MyRunPanel;
-import edu.touro.mco152.bm.ui.MySelectFrame;;
+import edu.touro.mco152.bm.ui.MySelectFrame;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -16,7 +16,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
-import java.util.List;
 
 public class GuiImplemented implements GuiInterface
 {
@@ -36,8 +35,8 @@ public class GuiImplemented implements GuiInterface
     public MyRunPanel runPanel = null;
 
     private MyDiskWorker worker = null;
-    private MyApp mainApp = null;
-    private SwingWorkerImplemented mySwing = null;
+    private MyApp mainApp;
+    private SwingWorkerImplemented mySwing;
     private boolean firstRun = true;
 
     public GuiImplemented(MyApp mainApp)
@@ -215,8 +214,7 @@ public class GuiImplemented implements GuiInterface
     @Override
     public void msg(String message) {mainFrame.msg(message); }
 
-    @Override
-    public void setUpDisplay()
+    private void setUpDisplay()
     {
         /* Set the Nimbus look and feel */
         try {
@@ -238,19 +236,19 @@ public class GuiImplemented implements GuiInterface
             }
             //</editor-fold>
         }
-
     }
 
     @Override
     public void init()
     {
+        setUpDisplay();
+
         mainFrame = new MyMainFrame(mainApp, this);
         selFrame = new MySelectFrame(mainApp, this, mainFrame);
 
         mainFrame.refreshConfig();
         mainFrame.setLocationRelativeTo(null);
         progressBar = mainFrame.getProgressBar();
-
         mainFrame.setVisible(true);
     }
 

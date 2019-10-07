@@ -1,15 +1,13 @@
 package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
-
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
 public interface GuiInterface
 {
     //from Gui
-    public void updateLegend();
-    public void resetTestData();
+    void updateLegend();
+    void resetTestData();
 
 
     //for DiskWorker
@@ -30,7 +28,6 @@ public interface GuiInterface
 
     //from app
     void msg(String message);
-    void setUpDisplay();
     void init();
     void clearRuns();
     void adjustSensitivity();

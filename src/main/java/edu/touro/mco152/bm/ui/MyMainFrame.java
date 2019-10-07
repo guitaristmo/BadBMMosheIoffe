@@ -26,9 +26,9 @@ import edu.touro.mco152.bm.persist.DiskRun.BlockSequence;
 public final class MyMainFrame extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
-    DecimalFormat df = new DecimalFormat("###.###");
-    GuiImplemented guiInstance;
-    MyApp appInstance;
+    private DecimalFormat df = new DecimalFormat("###.###");
+    private GuiImplemented guiInstance;
+    private MyApp appInstance;
 
     /**
      * Creates new form MainFrame
@@ -683,12 +683,12 @@ public final class MyMainFrame extends javax.swing.JFrame {
 
     private void multiFileCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multiFileCheckBoxMenuItemActionPerformed
         appInstance.multiFile = multiFileCheckBoxMenuItem.getState();
-        appInstance.saveConfig();
+        appInstance.propManager.saveConfig();
     }//GEN-LAST:event_multiFileCheckBoxMenuItemActionPerformed
 
     private void autoRemoveCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRemoveCheckBoxMenuItemActionPerformed
         appInstance.autoRemoveData = autoRemoveCheckBoxMenuItem.getState();
-        appInstance.saveConfig();
+        appInstance.propManager.saveConfig();
     }//GEN-LAST:event_autoRemoveCheckBoxMenuItemActionPerformed
 
     private void deleteDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteDataMenuItemActionPerformed
@@ -697,7 +697,7 @@ public final class MyMainFrame extends javax.swing.JFrame {
 
     private void autoResetCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoResetCheckBoxMenuItemActionPerformed
         appInstance.autoReset = autoResetCheckBoxMenuItem.getState();
-        appInstance.saveConfig();
+        appInstance.propManager.saveConfig();
     }//GEN-LAST:event_autoResetCheckBoxMenuItemActionPerformed
 
     private void resetSequenceMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSequenceMenuItemActionPerformed
@@ -714,7 +714,7 @@ public final class MyMainFrame extends javax.swing.JFrame {
 
     private void writeSyncCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_writeSyncCheckBoxMenuItemActionPerformed
         appInstance.writeSyncEnable = writeSyncCheckBoxMenuItem.getState();
-        appInstance.saveConfig();
+        appInstance.propManager.saveConfig();
     }//GEN-LAST:event_writeSyncCheckBoxMenuItemActionPerformed
 
     private void clearRunsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearRunsItemActionPerformed
