@@ -1,11 +1,9 @@
 package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
-//import edu.touro.mco152.bm.ui.Gui;
 import edu.touro.mco152.bm.ui.MyMainFrame;
 import edu.touro.mco152.bm.ui.MyRunPanel;
-import edu.touro.mco152.bm.ui.MySelectFrame;
-import javafx.beans.binding.ObjectExpression;
+import edu.touro.mco152.bm.ui.MySelectFrame;;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -14,16 +12,13 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.List;
-//import static edu.touro.mco152.bm.App.dataDir;
-//import static edu.touro.mco152.bm.App.worker;
 
-public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements GuiInterface
+public class GuiImplemented implements GuiInterface
 {
     public ChartPanel chartPanel = null;
     public MyMainFrame mainFrame = null;
@@ -40,14 +35,16 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     public JProgressBar progressBar = null;
     public MyRunPanel runPanel = null;
 
-    public MyDiskWorker worker = null;
-    public MyApp mainApp = null;
-
+    private MyDiskWorker worker = null;
+    private MyApp mainApp = null;
+    private SwingWorkerImplemented mySwing = null;
+    private boolean firstRun = true;
 
     public GuiImplemented(MyApp mainApp)
     {
         super();
         this.mainApp = mainApp;
+        mySwing = new SwingWorkerImplemented(this, mainApp);
     }
 
     public ChartPanel createChartPanel() {
@@ -173,7 +170,7 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     }
 
     @Override
-    public boolean iIsCancelled() { return isCancelled(); }
+    public boolean iIsCancelled() { return mySwing.isCancelled(); }
 
     @Override
     public void clearRuns()
@@ -201,28 +198,18 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     }
 
     @Override
-    public void iPublish(Object... marks)
-    {
-        //I would use the following line but it wasn't casting properly
-        //publish((DiskMark[]) marks);
-
-        //so this is my version and it works
-        DiskMark[] mark = new DiskMark[marks.length];
-        for (int index = 0; index < marks.length; index++)
-            mark[index] = (DiskMark) marks[index];
-        publish(mark);
-    }
+    public void iPublish(Object... marks) { mySwing.uPublish(marks); }
 
     @Override
-    public void iCancel(boolean cancel) { cancel(cancel); }
+    public void iCancel(boolean cancel) { mySwing.cancel(cancel); }
 
     @Override
-    public void iAddPropertyChangeListener(PropertyChangeListener listener) { addPropertyChangeListener(listener); }
+    public void iAddPropertyChangeListener(PropertyChangeListener listener) { mySwing.addPropertyChangeListener(listener); }
 
     @Override
     public void iSetProgress(int progress)
     {
-        setProgress(progress);
+        mySwing.uSetProgress(progress);
     }
 
     @Override
@@ -274,34 +261,44 @@ public class GuiImplemented extends SwingWorker <Boolean, DiskMark> implements G
     }
 
     @Override
-    public void setWorker(MyDiskWorker worker){this.worker = worker;}
+    public void setWorker(MyDiskWorker worker)
+    {
+        this.worker = worker;
+        mySwing.setWorker(worker);
+    }
 
     @Override
-    public void iExecute() { execute(); }
+    public void iExecute()
+    {
+        if(!firstRun)
+        {
+            mySwing = new SwingWorkerImplemented(this, mainApp);
+            mySwing.setWorker(worker);
+        }
+        firstRun = false;
+        mySwing.execute();
+    }
 
-    @Override
     protected Boolean doInBackground() throws Exception { return worker.newDoInBackground(); }
 
-    @Override
-    public void process(List<DiskMark> markList) {
-        markList.stream().forEach( (m) -> {
-            if (m.type==DiskMark.MarkType.WRITE) {
-                addWriteMark(m);
-            } else {
-                addReadMark(m);
-            }
-        });
-    }
-
-    @Override
-    public void done() {
-        System.out.println("display.done was called");
-        if (mainApp.autoRemoveData) {
-            Util.deleteDirectory(mainApp.dataDir);
-        }
-        mainApp.state = MyApp.State.IDLE_STATE;
-        mainFrame.adjustSensitivity();
-    }
+//    public void process(List<DiskMark> markList) {
+//        markList.stream().forEach( (m) -> {
+//            if (m.type==DiskMark.MarkType.WRITE) {
+//                addWriteMark(m);
+//            } else {
+//                addReadMark(m);
+//            }
+//        });
+//    }
+//
+//    public void done() {
+//        System.out.println("display.done was called");
+//        if (mainApp.autoRemoveData) {
+//            Util.deleteDirectory(mainApp.dataDir);
+//        }
+//        mainApp.state = MyApp.State.IDLE_STATE;
+//        mainFrame.adjustSensitivity();
+//    }
 }
 
 
