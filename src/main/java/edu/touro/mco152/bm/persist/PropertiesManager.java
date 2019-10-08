@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 /**
  * Class for managing property storage for App
+ * SRP - not apps job for storing properties about the benchmarks
  */
 public class PropertiesManager
 {

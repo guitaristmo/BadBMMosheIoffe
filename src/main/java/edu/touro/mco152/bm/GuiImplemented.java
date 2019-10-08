@@ -17,6 +17,10 @@ import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 
+/**
+ * Class that manages the Gui and running diskworker (I'll split them up later)
+ *
+ */
 public class GuiImplemented implements GuiInterface
 {
     public ChartPanel chartPanel = null;

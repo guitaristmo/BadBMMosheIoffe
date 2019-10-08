@@ -58,7 +58,9 @@ public class MyApp {
     public double rMax = -1, rMin = -1, rAvg = -1;
 
 
-
+    /**
+     * Primary class for running the benchmark.
+     */
     public MyApp()
     {
         propManager = new PropertiesManager(this);
@@ -105,70 +107,6 @@ public class MyApp {
         }
         return version;
     }
-
-
-//    public void loadConfig() {
-//        File pFile = new File(PROPERTIESFILE);
-//        if (!pFile.exists()) { return; }
-//        try {
-//            InputStream is = new FileInputStream(pFile);
-//            p.load(is);
-//        } catch (FileNotFoundException ex) {
-//            Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        String value;
-//        value = p.getProperty("locationDir", System.getProperty("user.home"));
-//        locationDir = new File(value);
-//        value = p.getProperty("multiFile", String.valueOf(multiFile));
-//        multiFile = Boolean.valueOf(value);
-//        value = p.getProperty("autoRemoveData", String.valueOf(autoRemoveData));
-//        autoRemoveData = Boolean.valueOf(value);
-//        value = p.getProperty("autoReset", String.valueOf(autoReset));
-//        autoReset = Boolean.valueOf(value);
-//        value = p.getProperty("blockSequence", String.valueOf(blockSequence));
-//        blockSequence = DiskRun.BlockSequence.valueOf(value);
-//        value = p.getProperty("showMaxMin", String.valueOf(showMaxMin));
-//        showMaxMin = Boolean.valueOf(value);
-//        value = p.getProperty("numOfFiles", String.valueOf(numOfMarks));
-//        numOfMarks = Integer.valueOf(value);
-//        value = p.getProperty("numOfBlocks", String.valueOf(numOfBlocks));
-//        numOfBlocks = Integer.valueOf(value);
-//        value = p.getProperty("blockSizeKb", String.valueOf(blockSizeKb));
-//        blockSizeKb = Integer.valueOf(value);
-//        value = p.getProperty("writeTest", String.valueOf(writeTest));
-//        writeTest = Boolean.valueOf(value);
-//        value = p.getProperty("readTest", String.valueOf(readTest));
-//        readTest = Boolean.valueOf(value);
-//        value = p.getProperty("writeSyncEnable", String.valueOf(writeSyncEnable));
-//        writeSyncEnable = Boolean.valueOf(value);
-//    }
-//
-//    public void saveConfig() {
-//        p.setProperty("locationDir", this.locationDir.getAbsolutePath());
-//        p.setProperty("multiFile", String.valueOf(multiFile));
-//        p.setProperty("autoRemoveData", String.valueOf(autoRemoveData));
-//        p.setProperty("autoReset", String.valueOf(autoReset));
-//        p.setProperty("blockSequence", String.valueOf(blockSequence));
-//        p.setProperty("showMaxMin", String.valueOf(showMaxMin));
-//        p.setProperty("numOfFiles", String.valueOf(numOfMarks));
-//        p.setProperty("numOfBlocks", String.valueOf(numOfBlocks));
-//        p.setProperty("blockSizeKb", String.valueOf(blockSizeKb));
-//        p.setProperty("writeTest", String.valueOf(writeTest));
-//        p.setProperty("readTest", String.valueOf(readTest));
-//        p.setProperty("writeSyncEnable", String.valueOf(writeSyncEnable));
-//
-//        try {
-//            OutputStream out = new FileOutputStream(new File(PROPERTIESFILE));
-//            p.store(out, "jDiskMark Properties File");
-//        } catch (FileNotFoundException ex) {
-//            Logger.getLogger(MySelectFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch  (IOException ex) {
-//            Logger.getLogger(MySelectFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-
 
     public String getConfigString() {
         StringBuilder sb = new StringBuilder();

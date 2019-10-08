@@ -3,6 +3,12 @@ package edu.touro.mco152.bm;
 import edu.touro.mco152.bm.persist.DiskRun;
 import java.beans.PropertyChangeListener;
 
+/**
+ * Iterface for the the class that connects app and worker.
+ * SRP - Gets the Gui out of App and diskworker
+ * DIP - make App and diskworker not dependant on the gui
+ *
+ */
 public interface GuiInterface
 {
     //from Gui

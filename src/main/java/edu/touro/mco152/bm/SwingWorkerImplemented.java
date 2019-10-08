@@ -1,10 +1,12 @@
 package edu.touro.mco152.bm;
 
-import javafx.beans.binding.ObjectExpression;
-
 import javax.swing.*;
 import java.util.List;
 
+/**
+ * Class that runs the diskworker with Swing
+ *
+ */
 public class SwingWorkerImplemented extends SwingWorker <Boolean, DiskMark>
 {
     private MyDiskWorker worker = null;

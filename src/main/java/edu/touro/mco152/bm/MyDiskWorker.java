@@ -18,8 +18,9 @@ import javax.persistence.EntityManager;
 
 
 /**
- * Class running the disk benchmarking.
- *
+ * Class for benchmarking a disk.
+ * SRP - by removing Swing, the only job of this class is to run the benchmark
+ * not to make threading decisions(like Swing)
  */
 public class MyDiskWorker
 {
@@ -221,8 +222,6 @@ public class MyDiskWorker
         user.msg("disk info: ("+ run.getDiskInfo()+")");
         user.setTitle(run.getDiskInfo());
     }
-
-
 
     private void persistRun(DiskRun run)
     {
