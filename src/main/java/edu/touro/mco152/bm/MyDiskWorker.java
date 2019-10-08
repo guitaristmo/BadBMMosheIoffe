@@ -22,13 +22,21 @@ import javax.persistence.EntityManager;
  * SRP - by removing Swing, the only job of this class is to run the benchmark
  * not to make threading decisions(like Swing)
  */
-public class MyDiskWorker
+public class MyDiskWorker implements BenchmarkWorker
 {
     private GuiInterface user;
     private MyApp appInstance;
     private EntityManager em;
-    private DiskRun run;
+    //private DiskRun run;
     private boolean firstPass = true;
+
+    private BenchmarkInterface firstBenchmark;
+    private BenchmarkInterface secondBenchmark;
+
+    private int rUnitsComplete = 0;
+    private int wUnitsComplete = 0;
+    private int unitsComplete = 0;
+    private int unitsTotal;
 
     public MyDiskWorker(MyApp appInstance, GuiInterface user)
     {
@@ -36,23 +44,24 @@ public class MyDiskWorker
         this.user = user;
     }
 
-    protected Boolean runBenchmark() throws Exception
+    @Override
+    public boolean runBenchmark() throws Exception
     {
         System.out.println("*** starting new worker thread in MyDiskRun");
-        user.msg("Running readTest "+appInstance.readTest+"   writeTest "+appInstance.writeTest);
-        user.msg("num files: "+appInstance.numOfMarks+", num blks: "+appInstance.numOfBlocks
-                +", blk size (kb): "+appInstance.blockSizeKb+", blockSequence: "+appInstance.blockSequence);
+        user.msg("Running readTest "+appInstance.runConfigs.readTest+"   writeTest "+appInstance.runConfigs.writeTest);
+        user.msg("num files: "+appInstance.runConfigs.numOfMarks+", num blks: "+appInstance.runConfigs.numOfBlocks
+                +", blk size (kb): "+appInstance.runConfigs.blockSizeKb+", blockSequence: "+appInstance.runConfigs.blockSequence);
 
-        int wUnitsComplete = 0,
-                rUnitsComplete = 0,
-                unitsComplete;
+        rUnitsComplete = 0;
+        wUnitsComplete = 0;
+        unitsComplete = 0;
 
-        int wUnitsTotal = appInstance.writeTest ? appInstance.numOfBlocks * appInstance.numOfMarks : 0;
-        int rUnitsTotal = appInstance.readTest ? appInstance.numOfBlocks * appInstance.numOfMarks : 0;
-        int unitsTotal = wUnitsTotal + rUnitsTotal;
+        int wUnitsTotal = appInstance.runConfigs.writeTest ? appInstance.runConfigs.numOfBlocks * appInstance.runConfigs.numOfMarks : 0;
+        int rUnitsTotal = appInstance.runConfigs.readTest ? appInstance.runConfigs.numOfBlocks * appInstance.runConfigs.numOfMarks : 0;
+        unitsTotal = wUnitsTotal + rUnitsTotal;
         float percentComplete;
 
-        int blockSize = appInstance.blockSizeKb*KILOBYTE;
+        int blockSize = appInstance.runConfigs.blockSizeKb*KILOBYTE;
         byte [] blockArr = new byte [blockSize];
         for (int b=0; b<blockArr.length; b++) {
             if (b%2==0) {
@@ -60,82 +69,38 @@ public class MyDiskWorker
             }
         }
 
-        DiskMark wMark, rMark;
+        //DiskMark wMark, rMark;
         user.updateLegend();
 
-        if (appInstance.autoReset) {
+        if (appInstance.runConfigs.autoReset) {
             appInstance.resetTestData();
             user.resetTestData();
         }
 
         int startFileNum = appInstance.nextMarkNumber;
 
-        if(appInstance.writeTest) {
-            run = new DiskRun(DiskRun.IOMode.WRITE, appInstance.blockSequence);
-            initializeDiskRun();
 
-            if (!appInstance.multiFile) {
-                appInstance.testFile = new File(appInstance.dataDir.getAbsolutePath()+File.separator+"testdata.jdm");
-            }
-            for (int m=startFileNum; m<startFileNum+appInstance.numOfMarks && !user.iIsCancelled(); m++) {
 
-                if (appInstance.multiFile) {
-                    appInstance.testFile = new File(appInstance.dataDir.getAbsolutePath()
-                            + File.separator+"testdata"+m+".jdm");
-                }
-                wMark = new DiskMark(WRITE);
-                wMark.setMarkNum(m);
-                long startTime = System.nanoTime();
-                long totalBytesWrittenInMark = 0;
 
-                String mode = "rw";
-                if (appInstance.writeSyncEnable) { mode = "rwd"; }
 
-                try {
-                    try (RandomAccessFile rAccFile = new RandomAccessFile(appInstance.testFile,mode)) {
-                        for (int b=0; b<appInstance.numOfBlocks; b++) {
-                            if (appInstance.blockSequence == DiskRun.BlockSequence.RANDOM) {
-                                int rLoc = Util.randInt(0, appInstance.numOfBlocks-1);
-                                rAccFile.seek(rLoc*blockSize);
-                            } else {
-                                rAccFile.seek(b*blockSize);
-                            }
-                            rAccFile.write(blockArr, 0, blockSize);
-                            totalBytesWrittenInMark += blockSize;
-                            wUnitsComplete++;
-                            unitsComplete = rUnitsComplete + wUnitsComplete;
-                            percentComplete = (float)unitsComplete/(float)unitsTotal * 100f;
-                            user.iSetProgress((int)percentComplete);
-                        }
-                    }
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-                }
-        //only possible exception is FileNotFound. Second catch block is redundant
-//                catch (IOException ex) {
-//                    Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-                long endTime = System.nanoTime();
-                long elapsedTimeNs = endTime - startTime;
-                double sec = (double)elapsedTimeNs / (double)1000000000;
-                double mbWritten = (double)totalBytesWrittenInMark / (double)MEGABYTE;
-                wMark.setBwMbSec(mbWritten / sec);
-                user.msg("m:"+m+" write IO is "+wMark.getBwMbSecAsString()+" MB/s     "
-                        + "("+Util.displayString(mbWritten)+ "MB written in "
-                        + Util.displayString(sec)+" sec)");
-                appInstance.updateMetrics(wMark);
-                user.iPublish(wMark);
 
-                run.setRunMax(wMark.getCumMax());
-                run.setRunMin(wMark.getCumMin());
-                run.setRunAvg(wMark.getCumAvg());
-                run.setEndTime(new Date());
+        /////////////////////////////////////////////////////////////////////////
+
+
+        if(appInstance.runConfigs.writeTest) {
+            firstBenchmark = new WriteBenchmark(this, appInstance.runConfigs);
+            firstBenchmark.initializeRun();
+            user.msg("disk info: ("+ firstBenchmark.getItemInfo()+")");
+            user.setTitle(firstBenchmark.getItemInfo());
+
+            if (!appInstance.runConfigs.multiFile) {
+                appInstance.runConfigs.testFile = new File(appInstance.runConfigs.dataDir.getAbsolutePath()+File.separator+"testdata.jdm");
             }
 
-            //Check out the comment in the read section
-            persistRun(run);
+            for (int m=startFileNum; m<startFileNum+appInstance.runConfigs.numOfMarks && !user.iIsCancelled(); m++) {
 
-            user.addRun(run);
+                firstBenchmark.run(m);
+            }
         }
 
 
@@ -212,16 +177,33 @@ public class MyDiskWorker
         return true;
     }
 
-    private void initializeDiskRun()
+    public void updateProgress(int progress)
     {
-        run.setNumMarks(appInstance.numOfMarks);
-        run.setNumBlocks(appInstance.numOfBlocks);
-        run.setBlockSize(appInstance.blockSizeKb);
-        run.setTxSize(appInstance.targetTxSizeKb());
-        run.setDiskInfo(Util.getDiskInfo(appInstance.dataDir));
-        user.msg("disk info: ("+ run.getDiskInfo()+")");
-        user.setTitle(run.getDiskInfo());
+        unitsComplete = rUnitsComplete + wUnitsComplete;
+        percentComplete = (float)unitsComplete/(float)unitsTotal * 100f;
+        user.iSetProgress((int)percentComplete);
+
     }
+
+//    private void initializeDiskRun()
+//    {
+//        run.setNumMarks(appInstance.numOfMarks);
+//        run.setNumBlocks(appInstance.numOfBlocks);
+//        run.setBlockSize(appInstance.blockSizeKb);
+//        run.setTxSize(appInstance.targetTxSizeKb());
+//        run.setDiskInfo(Util.getDiskInfo(appInstance.dataDir));
+//        user.msg("disk info: ("+ run.getDiskInfo()+")");
+//        user.setTitle(run.getDiskInfo());
+//    }
+
+    public void incrementWriteUnits()
+    {
+        wUnitsComplete++;
+        unitsComplete = rUnitsComplete + wUnitsComplete;
+        user.iSetProgress((int)((float)unitsComplete/(float)unitsTotal * 100f));
+    }
+
+    public void incrementReadUnits(){rUnitsComplete++;}
 
     private void persistRun(DiskRun run)
     {
@@ -235,7 +217,6 @@ public class MyDiskWorker
             em.getTransaction().commit();
         }
     }
-
 }
 
 

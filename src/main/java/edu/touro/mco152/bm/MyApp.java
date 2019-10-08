@@ -34,24 +34,24 @@ public class MyApp {
     public enum State {IDLE_STATE, DISK_TEST_STATE};
     public State state = State.IDLE_STATE;
 
-    public File locationDir = null;
-    public File dataDir = null;
-    public File testFile = null;
-
     // options
-    public boolean multiFile = true;
-    public boolean autoRemoveData = false;
-    public boolean autoReset = true;
-    public boolean showMaxMin = true;
-    public boolean writeSyncEnable = true;
+//    public boolean multiFile = true;
+//    public boolean autoRemoveData = false;
+//    public boolean autoReset = true;
+//    public boolean showMaxMin = true;
+//    public boolean writeSyncEnable = true;
 
     // run configuration
-    public boolean readTest = false;
-    public boolean writeTest = true;
-    public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;
-    public int numOfMarks = 25;      // desired number of marks
-    public int numOfBlocks = 32;     // desired number of blocks
-    public int blockSizeKb = 512;    // size of a block in KBs
+    public RunConfigSetting runConfigs;
+//    public File locationDir = null;
+//    public File dataDir = null;
+//    public File testFile = null;
+//    public boolean readTest = false;
+//    public boolean writeTest = true;
+//    public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;
+//    public int numOfMarks = 25;      // desired number of marks
+//    public int numOfBlocks = 32;     // desired number of blocks
+//    public int blockSizeKb = 512;    // size of a block in KBs
 
     public int nextMarkNumber = 1;   // number of the next mark
     public double wMax = -1, wMin = -1, wAvg = -1;
@@ -63,6 +63,7 @@ public class MyApp {
      */
     public MyApp()
     {
+        runConfigs = new RunConfigSetting();
         propManager = new PropertiesManager(this);
         propManager.loadConfig();
         System.out.println(this.getConfigString());
@@ -111,17 +112,17 @@ public class MyApp {
     public String getConfigString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Config for Java Disk Mark ").append(getVersion()).append('\n');
-        sb.append("readTest: ").append(readTest).append('\n');
-        sb.append("writeTest: ").append(writeTest).append('\n');
-        sb.append("locationDir: ").append(locationDir).append('\n');
-        sb.append("multiFile: ").append(multiFile).append('\n');
-        sb.append("autoRemoveData: ").append(autoRemoveData).append('\n');
-        sb.append("autoReset: ").append(autoReset).append('\n');
-        sb.append("blockSequence: ").append(blockSequence).append('\n');
-        sb.append("showMaxMin: ").append(showMaxMin).append('\n');
-        sb.append("numOfFiles: ").append(numOfMarks).append('\n');
-        sb.append("numOfBlocks: ").append(numOfBlocks).append('\n');
-        sb.append("blockSizeKb: ").append(blockSizeKb).append('\n');
+        sb.append("readTest: ").append(runConfigs.readTest).append('\n');
+        sb.append("writeTest: ").append(runConfigs.writeTest).append('\n');
+        sb.append("locationDir: ").append(runConfigs.locationDir).append('\n');
+        sb.append("multiFile: ").append(runConfigs.multiFile).append('\n');
+        sb.append("autoRemoveData: ").append(runConfigs.autoRemoveData).append('\n');
+        sb.append("autoReset: ").append(runConfigs.autoReset).append('\n');
+        sb.append("blockSequence: ").append(runConfigs.blockSequence).append('\n');
+        sb.append("showMaxMin: ").append(runConfigs.showMaxMin).append('\n');
+        sb.append("numOfFiles: ").append(runConfigs.numOfMarks).append('\n');
+        sb.append("numOfBlocks: ").append(runConfigs.numOfBlocks).append('\n');
+        sb.append("blockSizeKb: ").append(runConfigs.blockSizeKb).append('\n');
         return sb.toString();
     }
 
@@ -163,7 +164,7 @@ public class MyApp {
         }
 
         //2. check can write to location
-        if (locationDir.canWrite() == false) {
+        if (runConfigs.locationDir.canWrite() == false) {
             display.msg("Selected directory can not be written to... aborting");
             return;
         }
@@ -175,11 +176,11 @@ public class MyApp {
         display.adjustSensitivity();
 
         //4. create data dir reference
-        dataDir = new File (locationDir.getAbsolutePath()+File.separator+DATADIRNAME);
+        runConfigs.dataDir = new File (runConfigs.locationDir.getAbsolutePath()+File.separator+DATADIRNAME);
 
         //5. remove existing test data if exist
-        if (this.autoRemoveData && dataDir.exists()) {
-            if (dataDir.delete()) {
+        if (runConfigs.autoRemoveData && runConfigs.dataDir.exists()) {
+            if (runConfigs.dataDir.delete()) {
                 display.msg("removed existing data dir");
             } else {
                 display.msg("unable to remove existing data dir");
@@ -187,7 +188,7 @@ public class MyApp {
         }
 
         //6. create data dir if not already present
-        if (dataDir.exists() == false) { dataDir.mkdirs(); }
+        if (runConfigs.dataDir.exists() == false) { runConfigs.dataDir.mkdirs(); }
 
         //7. start disk worker thread
         if (worker == null)
@@ -202,13 +203,13 @@ public class MyApp {
                 case "progress":
                     int value = (Integer)event.getNewValue();
                     display.iSetProgress(value);
-                    long kbProcessed = (value) * this.targetTxSizeKb() / 100;
-                    display.iSetProgressBarString(String.valueOf(kbProcessed)+" / "+String.valueOf(this.targetTxSizeKb()));
+                    long kbProcessed = (value) * this.runConfigs.targetTxSizeKb() / 100;
+                    display.iSetProgressBarString(String.valueOf(kbProcessed)+" / "+String.valueOf(this.runConfigs.targetTxSizeKb()));
                     break;
                 case "state":
                     switch ((StateValue) event.getNewValue()) {
                         case STARTED:
-                            display.iSetProgressBarString("0 / "+String.valueOf(this.targetTxSizeKb()));
+                            display.iSetProgressBarString("0 / "+String.valueOf(this.runConfigs.targetTxSizeKb()));
                             break;
                         case DONE:
                             break;
@@ -218,10 +219,6 @@ public class MyApp {
         });
         display.iExecute();
     }
-
-    public long targetMarkSizeKb() { return blockSizeKb * numOfBlocks; }
-
-    public long targetTxSizeKb() { return blockSizeKb * numOfBlocks * numOfMarks; }
 
     public void updateMetrics(DiskMark mark) {
         if (mark.type==DiskMark.MarkType.WRITE) {
