@@ -13,6 +13,7 @@ import javax.swing.SwingWorker.StateValue;
 
 import edu.touro.mco152.bm.persist.PropertiesManager;
 import edu.touro.mco152.bm.persist.DiskRun;
+import edu.touro.mco152.bm.ui.MarkResetObject;
 
 /**
  * Primary class for global variables.
@@ -52,10 +53,6 @@ public class MyApp {
 //    public int numOfMarks = 25;      // desired number of marks
 //    public int numOfBlocks = 32;     // desired number of blocks
 //    public int blockSizeKb = 512;    // size of a block in KBs
-
-    public int nextMarkNumber = 1;   // number of the next mark
-    public double wMax = -1, wMin = -1, wAvg = -1;
-    public double rMax = -1, rMin = -1, rAvg = -1;
 
 
     /**
@@ -220,51 +217,59 @@ public class MyApp {
         display.iExecute();
     }
 
-    public void updateMetrics(DiskMark mark) {
-        if (mark.type==DiskMark.MarkType.WRITE) {
-            if (wMax==-1 || wMax < mark.getBwMbSec()) {
-                wMax = mark.getBwMbSec();
-            }
-            if (wMin==-1 || wMin > mark.getBwMbSec()) {
-                wMin = mark.getBwMbSec();
-            }
-            if (wAvg==-1) {
-                wAvg = mark.getBwMbSec();
-            } else {
-                int n = mark.getMarkNum();
-                wAvg = (((double)(n-1)*wAvg)+mark.getBwMbSec())/(double)n;
-            }
-            mark.setCumAvg(wAvg);
-            mark.setCumMax(wMax);
-            mark.setCumMin(wMin);
-        } else {
-            if (rMax==-1 || rMax < mark.getBwMbSec()) {
-                rMax = mark.getBwMbSec();
-            }
-            if (rMin==-1 || rMin > mark.getBwMbSec()) {
-                rMin = mark.getBwMbSec();
-            }
-            if (rAvg==-1) {
-                rAvg = mark.getBwMbSec();
-            } else {
-                int n = mark.getMarkNum();
-                rAvg = (((double)(n-1)*rAvg)+mark.getBwMbSec())/(double)n;
-            }
-            mark.setCumAvg(rAvg);
-            mark.setCumMax(rMax);
-            mark.setCumMin(rMin);
-        }
+//    public void updateMetrics(DiskMark mark) {
+//        if (mark.type==DiskMark.MarkType.WRITE) {
+//            if (wMax==-1 || wMax < mark.getBwMbSec()) {
+//                wMax = mark.getBwMbSec();
+//            }
+//            if (wMin==-1 || wMin > mark.getBwMbSec()) {
+//                wMin = mark.getBwMbSec();
+//            }
+//            if (wAvg==-1) {
+//                wAvg = mark.getBwMbSec();
+//            } else {
+//                int n = mark.getMarkNum();
+//                wAvg = (((double)(n-1)*wAvg)+mark.getBwMbSec())/(double)n;
+//            }
+//            mark.setCumAvg(wAvg);
+//            mark.setCumMax(wMax);
+//            mark.setCumMin(wMin);
+//        } else {
+//            if (rMax==-1 || rMax < mark.getBwMbSec()) {
+//                rMax = mark.getBwMbSec();
+//            }
+//            if (rMin==-1 || rMin > mark.getBwMbSec()) {
+//                rMin = mark.getBwMbSec();
+//            }
+//            if (rAvg==-1) {
+//                rAvg = mark.getBwMbSec();
+//            } else {
+//                int n = mark.getMarkNum();
+//                rAvg = (((double)(n-1)*rAvg)+mark.getBwMbSec())/(double)n;
+//            }
+//            mark.setCumAvg(rAvg);
+//            mark.setCumMax(rMax);
+//            mark.setCumMin(rMin);
+//        }
+//    }
+
+    public void resetSequence(){worker.resetSequence();}
+
+    public void resetTestData()
+    {
+        MarkResetObject marks = worker.resetTestData();
+        display.resetTestData(marks);
     }
 
-    public void resetSequence() { nextMarkNumber = 1; }
-
-    public void resetTestData() {
-        nextMarkNumber = 1;
-        wAvg = -1;
-        wMax = -1;
-        wMin = -1;
-        rAvg = -1;
-        rMax = -1;
-        rMin = -1;
-    }
+//    public void resetSequence() { nextMarkNumber = 1; }
+//
+//    public void resetTestData() {
+//        nextMarkNumber = 1;
+//        wAvg = -1;
+//        wMax = -1;
+//        wMin = -1;
+//        rAvg = -1;
+//        rMax = -1;
+//        rMin = -1;
+//    }
 }

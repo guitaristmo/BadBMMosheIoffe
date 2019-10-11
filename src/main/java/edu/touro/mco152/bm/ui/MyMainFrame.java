@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.text.DefaultCaret;
 
+import edu.touro.mco152.bm.DiskMark;
 import edu.touro.mco152.bm.MyApp;
 import edu.touro.mco152.bm.GuiImplemented;
 import edu.touro.mco152.bm.Util;
@@ -65,28 +66,28 @@ public final class MyMainFrame extends javax.swing.JFrame {
      * has been loaded.
      */
     public void refreshConfig() {
-        if (appInstance.locationDir != null) { // set the location dir if not null
-            setLocation(appInstance.locationDir.getAbsolutePath());
+        if (appInstance.runConfigs.locationDir != null) { // set the location dir if not null
+            setLocation(appInstance.runConfigs.locationDir.getAbsolutePath());
         }
-        multiFileCheckBoxMenuItem.setSelected(appInstance.multiFile);
-        autoRemoveCheckBoxMenuItem.setSelected(appInstance.autoRemoveData);
-        autoResetCheckBoxMenuItem.setSelected(appInstance.autoReset);
-        showMaxMinCheckBoxMenuItem.setSelected(appInstance.showMaxMin);
-        writeSyncCheckBoxMenuItem.setSelected(appInstance.writeSyncEnable);
+        multiFileCheckBoxMenuItem.setSelected(appInstance.runConfigs.multiFile);
+        autoRemoveCheckBoxMenuItem.setSelected(appInstance.runConfigs.autoRemoveData);
+        autoResetCheckBoxMenuItem.setSelected(appInstance.runConfigs.autoReset);
+        showMaxMinCheckBoxMenuItem.setSelected(appInstance.runConfigs.showMaxMin);
+        writeSyncCheckBoxMenuItem.setSelected(appInstance.runConfigs.writeSyncEnable);
 
         String modeStr = "unset";
-        if      (!appInstance.readTest && appInstance.writeTest) { modeStr = "write"; }
-        else if (appInstance.readTest && !appInstance.writeTest) { modeStr = "read"; }
-        else if (appInstance.readTest && appInstance.writeTest) { modeStr = "write&read"; }
+        if      (!appInstance.runConfigs.readTest && appInstance.runConfigs.writeTest) { modeStr = "write"; }
+        else if (appInstance.runConfigs.readTest && !appInstance.runConfigs.writeTest) { modeStr = "read"; }
+        else if (appInstance.runConfigs.readTest && appInstance.runConfigs.writeTest) { modeStr = "write&read"; }
         else { msg("WARNING: invalid mode detected"); }
         modeCombo.setSelectedItem(modeStr);
 
-        //String blockOrderStr = appInstance.randomEnable ? "random":"sequential";
-        orderComboBox.setSelectedItem(appInstance.blockSequence);
+        //String blockOrderStr = appInstance.runConfigs.randomEnable ? "random":"sequential";
+        orderComboBox.setSelectedItem(appInstance.runConfigs.blockSequence);
 
-        numFilesCombo.setSelectedItem(String.valueOf(appInstance.numOfMarks));
-        numBlocksCombo.setSelectedItem(String.valueOf(appInstance.numOfBlocks));
-        blockSizeCombo.setSelectedItem(String.valueOf(appInstance.blockSizeKb));
+        numFilesCombo.setSelectedItem(String.valueOf(appInstance.runConfigs.numOfMarks));
+        numBlocksCombo.setSelectedItem(String.valueOf(appInstance.runConfigs.numOfBlocks));
+        blockSizeCombo.setSelectedItem(String.valueOf(appInstance.runConfigs.blockSizeKb));
     }
 
 
@@ -613,8 +614,8 @@ public final class MyMainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void chooseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseButtonActionPerformed
-        if (appInstance.locationDir != null && appInstance.locationDir.exists()) {
-            guiInstance.selFrame.setInitDir(appInstance.locationDir);
+        if (appInstance.runConfigs.locationDir != null && appInstance.runConfigs.locationDir.exists()) {
+            guiInstance.selFrame.setInitDir(appInstance.runConfigs.locationDir);
         }
         guiInstance.selFrame.setVisible(true);
     }//GEN-LAST:event_chooseButtonActionPerformed
@@ -632,32 +633,31 @@ public final class MyMainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void blockSizeComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockSizeComboActionPerformed
-        appInstance.blockSizeKb = Integer.valueOf((String) blockSizeCombo.getSelectedItem());
-        fileSizeLabel.setText(String.valueOf(appInstance.targetMarkSizeKb()));
-        totalTxProgBar.setString(String.valueOf(appInstance.targetTxSizeKb()));
+        appInstance.runConfigs.blockSizeKb = Integer.valueOf((String) blockSizeCombo.getSelectedItem());
+        fileSizeLabel.setText(String.valueOf(appInstance.runConfigs.targetMarkSizeKb()));
+        totalTxProgBar.setString(String.valueOf(appInstance.runConfigs.targetTxSizeKb()));
     }//GEN-LAST:event_blockSizeComboActionPerformed
 
     private void numBlocksComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numBlocksComboActionPerformed
-        appInstance.numOfBlocks = Integer.valueOf((String) numBlocksCombo.getSelectedItem());
-        fileSizeLabel.setText(String.valueOf(appInstance.targetMarkSizeKb()));
-        totalTxProgBar.setString(String.valueOf(appInstance.targetTxSizeKb()));
+        appInstance.runConfigs.numOfBlocks = Integer.valueOf((String) numBlocksCombo.getSelectedItem());
+        fileSizeLabel.setText(String.valueOf(appInstance.runConfigs.targetMarkSizeKb()));
+        totalTxProgBar.setString(String.valueOf(appInstance.runConfigs.targetTxSizeKb()));
     }//GEN-LAST:event_numBlocksComboActionPerformed
 
     private void numFilesComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numFilesComboActionPerformed
-        appInstance.numOfMarks = Integer.valueOf((String) numFilesCombo.getSelectedItem());
-        fileSizeLabel.setText(String.valueOf(appInstance.targetMarkSizeKb()));
-        totalTxProgBar.setString(String.valueOf(appInstance.targetTxSizeKb()));
+        appInstance.runConfigs.numOfMarks = Integer.valueOf((String) numFilesCombo.getSelectedItem());
+        fileSizeLabel.setText(String.valueOf(appInstance.runConfigs.targetMarkSizeKb()));
+        totalTxProgBar.setString(String.valueOf(appInstance.runConfigs.targetTxSizeKb()));
     }//GEN-LAST:event_numFilesComboActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
         appInstance.resetTestData();
-        guiInstance.resetTestData();
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void modeComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeComboActionPerformed
         String modeStr = (String) modeCombo.getSelectedItem();
-        appInstance.readTest = modeStr.contains("read");
-        appInstance.writeTest = modeStr.contains("write");
+        appInstance.runConfigs.readTest = modeStr.contains("read");
+        appInstance.runConfigs.writeTest = modeStr.contains("write");
     }//GEN-LAST:event_modeComboActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -671,7 +671,7 @@ public final class MyMainFrame extends javax.swing.JFrame {
 
     private void openLocButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openLocButtonActionPerformed
         try {
-            Desktop.getDesktop().open(appInstance.locationDir);
+            Desktop.getDesktop().open(appInstance.runConfigs.locationDir);
         } catch (IOException ex) {
             Logger.getLogger(MyMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -682,21 +682,21 @@ public final class MyMainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_clearLogsItemActionPerformed
 
     private void multiFileCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multiFileCheckBoxMenuItemActionPerformed
-        appInstance.multiFile = multiFileCheckBoxMenuItem.getState();
+        appInstance.runConfigs.multiFile = multiFileCheckBoxMenuItem.getState();
         appInstance.propManager.saveConfig();
     }//GEN-LAST:event_multiFileCheckBoxMenuItemActionPerformed
 
     private void autoRemoveCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRemoveCheckBoxMenuItemActionPerformed
-        appInstance.autoRemoveData = autoRemoveCheckBoxMenuItem.getState();
+        appInstance.runConfigs.autoRemoveData = autoRemoveCheckBoxMenuItem.getState();
         appInstance.propManager.saveConfig();
     }//GEN-LAST:event_autoRemoveCheckBoxMenuItemActionPerformed
 
     private void deleteDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteDataMenuItemActionPerformed
-        Util.deleteDirectory(appInstance.dataDir);
+        Util.deleteDirectory(appInstance.runConfigs.dataDir);
     }//GEN-LAST:event_deleteDataMenuItemActionPerformed
 
     private void autoResetCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoResetCheckBoxMenuItemActionPerformed
-        appInstance.autoReset = autoResetCheckBoxMenuItem.getState();
+        appInstance.runConfigs.autoReset = autoResetCheckBoxMenuItem.getState();
         appInstance.propManager.saveConfig();
     }//GEN-LAST:event_autoResetCheckBoxMenuItemActionPerformed
 
@@ -705,15 +705,15 @@ public final class MyMainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_resetSequenceMenuItemActionPerformed
 
     private void showMaxMinCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showMaxMinCheckBoxMenuItemActionPerformed
-        appInstance.showMaxMin = showMaxMinCheckBoxMenuItem.getState();
+        appInstance.runConfigs.showMaxMin = showMaxMinCheckBoxMenuItem.getState();
     }//GEN-LAST:event_showMaxMinCheckBoxMenuItemActionPerformed
 
     private void orderComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderComboBoxActionPerformed
-        appInstance.blockSequence = (DiskRun.BlockSequence) orderComboBox.getSelectedItem();
+        appInstance.runConfigs.blockSequence = (DiskRun.BlockSequence) orderComboBox.getSelectedItem();
     }//GEN-LAST:event_orderComboBoxActionPerformed
 
     private void writeSyncCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_writeSyncCheckBoxMenuItemActionPerformed
-        appInstance.writeSyncEnable = writeSyncCheckBoxMenuItem.getState();
+        appInstance.runConfigs.writeSyncEnable = writeSyncCheckBoxMenuItem.getState();
         appInstance.propManager.saveConfig();
     }//GEN-LAST:event_writeSyncCheckBoxMenuItemActionPerformed
 
@@ -795,33 +795,33 @@ public final class MyMainFrame extends javax.swing.JFrame {
 
     public void applyTestParams() {
         String modeStr = (String) modeCombo.getSelectedItem();
-        appInstance.readTest = modeStr.contains("read");
-        appInstance.writeTest = modeStr.contains("write");
-        appInstance.blockSequence = (DiskRun.BlockSequence)orderComboBox.getSelectedItem();
-        appInstance.numOfMarks = Integer.valueOf((String) numFilesCombo.getSelectedItem());
-        appInstance.numOfBlocks = Integer.valueOf((String) numBlocksCombo.getSelectedItem());
-        appInstance.blockSizeKb = Integer.valueOf((String) blockSizeCombo.getSelectedItem());
-        fileSizeLabel.setText(String.valueOf(appInstance.targetMarkSizeKb()));
-        totalTxProgBar.setString(String.valueOf(appInstance.targetTxSizeKb()));
+        appInstance.runConfigs.readTest = modeStr.contains("read");
+        appInstance.runConfigs.writeTest = modeStr.contains("write");
+        appInstance.runConfigs.blockSequence = (DiskRun.BlockSequence)orderComboBox.getSelectedItem();
+        appInstance.runConfigs.numOfMarks = Integer.valueOf((String) numFilesCombo.getSelectedItem());
+        appInstance.runConfigs.numOfBlocks = Integer.valueOf((String) numBlocksCombo.getSelectedItem());
+        appInstance.runConfigs.blockSizeKb = Integer.valueOf((String) blockSizeCombo.getSelectedItem());
+        fileSizeLabel.setText(String.valueOf(appInstance.runConfigs.targetMarkSizeKb()));
+        totalTxProgBar.setString(String.valueOf(appInstance.runConfigs.targetTxSizeKb()));
     }
 
-    public void refreshWriteMetrics() {
+    public void refreshWriteMetrics(DiskMark mark) {
         String value;
-        value = appInstance.wMin==-1 ? "- -" : df.format(appInstance.wMin);
+        value = mark.wMin==-1 ? "- -" : df.format(mark.wMin);
         wMinLabel.setText(value);
-        value = appInstance.wMax==-1 ? "- -" : df.format(appInstance.wMax);
+        value = mark.wMax==-1 ? "- -" : df.format(mark.wMax);
         wMaxLabel.setText(value);
-        value = appInstance.wAvg==-1 ? "- -" : df.format(appInstance.wAvg);
+        value = mark.wAvg==-1 ? "- -" : df.format(mark.wAvg);
         wAvgLabel.setText(value);
     }
 
-    public void refreshReadMetrics() {
+    public void refreshReadMetrics(DiskMark mark) {
         String value;
-        value = appInstance.rMin==-1 ? "- -" : df.format(appInstance.rMin);
+        value = mark.rMin==-1 ? "- -" : df.format(mark.rMin);
         rMinLabel.setText(value);
-        value = appInstance.rMax==-1 ? "- -" : df.format(appInstance.rMax);
+        value = mark.rMax==-1 ? "- -" : df.format(mark.rMax);
         rMaxLabel.setText(value);
-        value = appInstance.rAvg==-1 ? "- -" : df.format(appInstance.rAvg);
+        value = mark.rAvg==-1 ? "- -" : df.format(mark.rAvg);
         rAvgLabel.setText(value);
     }
 

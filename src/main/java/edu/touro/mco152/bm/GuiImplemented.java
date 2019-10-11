@@ -1,6 +1,7 @@
 package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
+import edu.touro.mco152.bm.ui.MarkResetObject;
 import edu.touro.mco152.bm.ui.MyMainFrame;
 import edu.touro.mco152.bm.ui.MyRunPanel;
 import edu.touro.mco152.bm.ui.MySelectFrame;
@@ -113,27 +114,27 @@ public class GuiImplemented implements GuiInterface
     void addWriteMark(DiskMark mark) {
         wSeries.add(mark.getMarkNum(), mark.getBwMbSec());
         wAvgSeries.add(mark.getMarkNum(), mark.getCumAvg());
-        if (mainApp.showMaxMin) {
+        if (mainApp.runConfigs.showMaxMin) {
             wMaxSeries.add(mark.getMarkNum(), mark.getCumMax());
             wMinSeries.add(mark.getMarkNum(), mark.getCumMin());
         }
-        mainFrame.refreshWriteMetrics();
+        mainFrame.refreshWriteMetrics(mark);
         System.out.println(mark.toString());
     }
 
     void addReadMark(DiskMark mark) {
         rSeries.add(mark.getMarkNum(), mark.getBwMbSec());
         rAvgSeries.add(mark.getMarkNum(), mark.getCumAvg());
-        if (mainApp.showMaxMin) {
+        if (mainApp.runConfigs.showMaxMin) {
             rMaxSeries.add(mark.getMarkNum(), mark.getCumMax());
             rMinSeries.add(mark.getMarkNum(), mark.getCumMin());
         }
-        mainFrame.refreshReadMetrics();
+        mainFrame.refreshReadMetrics(mark);
         System.out.println(mark.toString());
     }
 
     @Override
-    public void resetTestData() {
+    public void resetTestData(MarkResetObject marks) {
         wSeries.clear();
         rSeries.clear();
         wAvgSeries.clear();
@@ -143,8 +144,8 @@ public class GuiImplemented implements GuiInterface
         wMinSeries.clear();
         rMinSeries.clear();
         progressBar.setValue(0);
-        mainFrame.refreshReadMetrics();
-        mainFrame.refreshWriteMetrics();
+        mainFrame.refreshReadMetrics(marks.readMark);
+        mainFrame.refreshWriteMetrics(marks.writeMark);
     }
 
     @Override
@@ -183,15 +184,15 @@ public class GuiImplemented implements GuiInterface
 
     @Override
     public void updateLegend() {
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(0, mainApp.writeTest);
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(1, mainApp.writeTest);
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(2, mainApp.writeTest&&mainApp.showMaxMin);
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(3, mainApp.writeTest&&mainApp.showMaxMin);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(0, mainApp.runConfigs.writeTest);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(1, mainApp.runConfigs.writeTest);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(2, mainApp.runConfigs.writeTest&&mainApp.runConfigs.showMaxMin);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(3, mainApp.runConfigs.writeTest&&mainApp.runConfigs.showMaxMin);
 
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(4, mainApp.readTest);
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(5, mainApp.readTest);
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(6, mainApp.readTest&&mainApp.showMaxMin);
-        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(7, mainApp.readTest&&mainApp.showMaxMin);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(4, mainApp.runConfigs.readTest);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(5, mainApp.runConfigs.readTest);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(6, mainApp.runConfigs.readTest&&mainApp.runConfigs.showMaxMin);
+        chart.getXYPlot().getRenderer().setSeriesVisibleInLegend(7, mainApp.runConfigs.readTest&&mainApp.runConfigs.showMaxMin);
     }
 
     @Override

@@ -25,9 +25,9 @@ public class MySelectFrame extends javax.swing.JFrame {
         this.mainFrame = mainFrame;
         initComponents();
         setLocationRelativeTo(mainFrame);
-        if (mainApp.locationDir == null) {
-            mainApp.locationDir = new File(System.getProperty("user.home"));
-            mainApp.dataDir = new File(mainApp.locationDir.getAbsolutePath()
+        if (mainApp.runConfigs.locationDir == null) {
+            mainApp.runConfigs.locationDir = new File(System.getProperty("user.home"));
+            mainApp.runConfigs.dataDir = new File(mainApp.runConfigs.locationDir.getAbsolutePath()
                     +File.separator+mainApp.DATADIRNAME);
         }
     }
@@ -71,9 +71,9 @@ public class MySelectFrame extends javax.swing.JFrame {
         System.out.println(evt);
         switch (evt.getActionCommand()) {
             case "ApproveSelection":
-                mainApp.locationDir = jFileChooser1.getSelectedFile();
+                mainApp.runConfigs.locationDir = jFileChooser1.getSelectedFile();
                 mainApp.propManager.saveConfig();
-                mainFrame.setLocation(mainApp.locationDir.getAbsolutePath());
+                mainFrame.setLocation(mainApp.runConfigs.locationDir.getAbsolutePath());
                 break;
             case "CancelSelection":
                 break;

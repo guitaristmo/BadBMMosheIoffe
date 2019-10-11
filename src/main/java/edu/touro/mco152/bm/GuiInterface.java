@@ -1,6 +1,8 @@
 package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
+import edu.touro.mco152.bm.ui.MarkResetObject;
+
 import java.beans.PropertyChangeListener;
 
 /**
@@ -13,7 +15,7 @@ public interface GuiInterface
 {
     //from Gui
     void updateLegend();
-    void resetTestData();
+    void resetTestData(MarkResetObject marks);
 
 
     //for DiskWorker

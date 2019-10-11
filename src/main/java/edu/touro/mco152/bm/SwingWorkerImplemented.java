@@ -53,8 +53,8 @@ public class SwingWorkerImplemented extends SwingWorker <Boolean, DiskMark>
     @Override
     public void done() {
         System.out.println("display.done was called");
-        if (mainApp.autoRemoveData) {
-            Util.deleteDirectory(mainApp.dataDir);
+        if (mainApp.runConfigs.autoRemoveData) {
+            Util.deleteDirectory(mainApp.runConfigs.dataDir);
         }
         mainApp.state = MyApp.State.IDLE_STATE;
         mainGui.adjustSensitivity();
