@@ -1,20 +1,8 @@
 
 package edu.touro.mco152.bm;
 
-import static edu.touro.mco152.bm.MyApp.KILOBYTE;
-import static edu.touro.mco152.bm.MyApp.MEGABYTE;
-import static edu.touro.mco152.bm.DiskMark.MarkType.READ;
-import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
-import edu.touro.mco152.bm.persist.DiskRun;
-import edu.touro.mco152.bm.persist.EM;
 import edu.touro.mco152.bm.ui.MarkResetObject;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 
@@ -49,7 +37,7 @@ public class MyDiskWorker implements BenchmarkWorker
     @Override
     public boolean runBenchmark() throws Exception
     {
-        System.out.println("*** starting new worker thread in MyDiskRun");
+        System.out.println("MyDiskWorker: starting the Benchmarking process");
         user.msg("Running readTest "+appInstance.runConfigs.readTest+"   writeTest "+appInstance.runConfigs.writeTest);
         user.msg("num files: "+appInstance.runConfigs.numOfMarks+", num blks: "+appInstance.runConfigs.numOfBlocks
                 +", blk size (kb): "+appInstance.runConfigs.blockSizeKb+", blockSequence: "+appInstance.runConfigs.blockSequence);
@@ -66,15 +54,6 @@ public class MyDiskWorker implements BenchmarkWorker
         int wUnitsTotal = appInstance.runConfigs.writeTest ? appInstance.runConfigs.numOfBlocks * appInstance.runConfigs.numOfMarks : 0;
         int rUnitsTotal = appInstance.runConfigs.readTest ? appInstance.runConfigs.numOfBlocks * appInstance.runConfigs.numOfMarks : 0;
         unitsTotal = wUnitsTotal + rUnitsTotal;
-
-        //these belong in the benchmark initialization
-//        int blockSize = appInstance.runConfigs.blockSizeKb*KILOBYTE;
-//        byte [] blockArr = new byte [blockSize];
-//        for (int b=0; b<blockArr.length; b++) {
-//            if (b%2==0) {
-//                blockArr[b]=(byte)0xFF;
-//            }
-//        }
 
 
         //----------------------------------------first test
@@ -114,10 +93,6 @@ public class MyDiskWorker implements BenchmarkWorker
             firstBenchmark.addRunToGui();
             firstPass = false;
         }
-
-
-
-
 
 
         // try renaming all files to clear catch

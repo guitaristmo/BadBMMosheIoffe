@@ -2,17 +2,11 @@ package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
 import edu.touro.mco152.bm.persist.EM;
-import edu.touro.mco152.bm.persist.RunInterface;
-
 import javax.persistence.EntityManager;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static edu.touro.mco152.bm.DiskMark.MarkType.READ;
 import static edu.touro.mco152.bm.MyApp.KILOBYTE;
 import static edu.touro.mco152.bm.MyApp.MEGABYTE;
@@ -36,17 +30,18 @@ public class ReadBenchmark implements BenchmarkInterface
         this.configSettings = configSettings;
         this.userInterface = userInterface;
         run = new DiskRun(DiskRun.IOMode.WRITE, configSettings.blockSequence);
+        rMark = new DiskMark(READ);
     }
 
     @Override
     public void run(int m)
     {
+        System.out.println("Read Benchmark: starting reading benchmark ");
         if (configSettings.multiFile) {
             configSettings.testFile = new File(configSettings.dataDir.getAbsolutePath()
                     + File.separator+"testdata"+m+".jdm");
         }
 
-        rMark = new DiskMark(READ);
         rMark.setMarkNum(m);
         long startTime = System.nanoTime();
         long totalBytesReadInMark = 0;
@@ -81,6 +76,7 @@ public class ReadBenchmark implements BenchmarkInterface
         userInterface.msg("m:"+m+" READ IO is "+rMark.getBwMbSec()+" MB/s    "
                 + "(MBread "+mbRead+" in "+sec+" sec)");
         rMark.updateMetrics();
+        System.out.println("Read Benchmark: about to publish read mark");
         userInterface.iPublish(rMark);
 
         run.setRunMax(rMark.getCumMax());

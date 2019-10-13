@@ -130,9 +130,9 @@ public class MyApp {
         System.out.println("loading stored run data");
         System.out.println("XXXX Java version is "  + System.getProperty("java.version"));
 
-        DiskRun.findAll().stream().forEach((DiskRun run) -> {
-            display.addRun(run);
-        });
+//        DiskRun.findAll().stream().forEach((DiskRun run) -> {
+//            display.addRun(run);
+//        });
     }
 
     public void clearSavedRuns() {

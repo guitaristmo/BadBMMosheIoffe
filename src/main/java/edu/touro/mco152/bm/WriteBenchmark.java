@@ -38,6 +38,7 @@ public class WriteBenchmark implements BenchmarkInterface
         this.configSettings = configSettings;
         this.userInterface = userInterface;
         run = new DiskRun(DiskRun.IOMode.WRITE, configSettings.blockSequence);
+        wMark = new DiskMark(WRITE);
     }
 
     @Override
@@ -47,7 +48,6 @@ public class WriteBenchmark implements BenchmarkInterface
             configSettings.testFile = new File(configSettings.dataDir.getAbsolutePath()
                     + File.separator+"testdata"+m+".jdm");
         }
-        wMark = new DiskMark(WRITE);
         wMark.setMarkNum(m);
         long startTime = System.nanoTime();
         long totalBytesWrittenInMark = 0;

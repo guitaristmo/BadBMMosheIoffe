@@ -123,6 +123,7 @@ public class GuiImplemented implements GuiInterface
     }
 
     void addReadMark(DiskMark mark) {
+        System.out.println("GuiImplemented: add Read Mark");
         rSeries.add(mark.getMarkNum(), mark.getBwMbSec());
         rAvgSeries.add(mark.getMarkNum(), mark.getCumAvg());
         if (mainApp.runConfigs.showMaxMin) {
