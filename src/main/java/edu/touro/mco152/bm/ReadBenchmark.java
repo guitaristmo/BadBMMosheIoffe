@@ -11,6 +11,9 @@ import static edu.touro.mco152.bm.DiskMark.MarkType.READ;
 import static edu.touro.mco152.bm.MyApp.KILOBYTE;
 import static edu.touro.mco152.bm.MyApp.MEGABYTE;
 
+/**
+ * Stores all the information about how to run Write Benchmark and persist it
+ */
 public class ReadBenchmark implements BenchmarkInterface
 {
     private DiskRun run;
@@ -34,7 +37,7 @@ public class ReadBenchmark implements BenchmarkInterface
     }
 
     @Override
-    public void run(int m)
+    public DiskMark run(int m)
     {
         System.out.println("Read Benchmark: starting reading benchmark ");
         if (configSettings.multiFile) {
@@ -63,10 +66,6 @@ public class ReadBenchmark implements BenchmarkInterface
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //only possible exception is FileNotFound. Second catch block is redundant
-//                catch (IOException ex) {
-//                    Logger.getLogger(MyApp.class.getName()).log(Level.SEVERE, null, ex);
-//                }
 
         long endTime = System.nanoTime();
         long elapsedTimeNs = endTime - startTime;
@@ -77,25 +76,25 @@ public class ReadBenchmark implements BenchmarkInterface
                 + "(MBread "+mbRead+" in "+sec+" sec)");
         rMark.updateMetrics();
         System.out.println("Read Benchmark: about to publish read mark");
-        userInterface.iPublish(rMark);
 
         run.setRunMax(rMark.getCumMax());
         run.setRunMin(rMark.getCumMin());
         run.setRunAvg(rMark.getCumAvg());
         run.setEndTime(new Date());
+        return rMark;
     }
 
     @Override
     public void persistRun(boolean firstPass)
     {
         if(firstPass)
-        {
-            System.out.println("worker: about to get em");
-            em = EM.getEntityManager();
-            em.getTransaction().begin();
-            em.persist(run);
-            em.getTransaction().commit();
-        }
+    {
+        System.out.println("worker: about to get em");
+        em = EM.getEntityManager();
+        em.getTransaction().begin();
+    }
+        em.persist(run);
+        em.getTransaction().commit();
     }
 
     @Override

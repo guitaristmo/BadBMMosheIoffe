@@ -6,10 +6,8 @@ import edu.touro.mco152.bm.ui.MarkResetObject;
 import java.beans.PropertyChangeListener;
 
 /**
- * Iterface for the the class that connects app and worker.
- * SRP - Gets the Gui out of App and diskworker
- * DIP - make App and diskworker not dependant on the gui
- *
+ * This represents all user interaction that
+ * diskworker and app will ever do
  */
 public interface GuiInterface
 {

@@ -1,12 +1,13 @@
 package edu.touro.mco152.bm;
 
-import edu.touro.mco152.bm.persist.RunInterface;
-
+/**
+ * This is the interface for a Benchmark
+ * Any implementing class must know how to run one
+ * iteration of a benchmark and how to persist it(or not too)
+ */
 public interface BenchmarkInterface
 {
-    void run(int loopIterationCounter);
-
-    void persistRun(boolean firstPass);
+    Mark run(int loopIterationCounter);
 
     void addRunToGui();
 
@@ -14,5 +15,9 @@ public interface BenchmarkInterface
 
     String getItemInfo();
 
+    void persistRun(boolean firstPass);
+
     DiskMark resetTestData();
+
+
 }

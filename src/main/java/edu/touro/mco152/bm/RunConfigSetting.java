@@ -1,9 +1,11 @@
 package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
-
 import java.io.File;
 
+/**
+ * This class stores configuration settings for Disk tests
+ */
 public class RunConfigSetting
 {
     public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;

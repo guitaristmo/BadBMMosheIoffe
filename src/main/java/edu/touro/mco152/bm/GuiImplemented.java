@@ -19,8 +19,9 @@ import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 
 /**
- * Class that manages the Gui and running diskworker (I'll split them up later)
- *
+ * Class that manages the Gui
+ * This class deals with communication/interfacing with the user and choosing
+ * how to run diskWorker(i.e. through swingWorker)
  */
 public class GuiImplemented implements GuiInterface
 {
@@ -136,6 +137,7 @@ public class GuiImplemented implements GuiInterface
 
     @Override
     public void resetTestData(MarkResetObject marks) {
+        System.out.println("GuiImplemented: reset Test Data");
         wSeries.clear();
         rSeries.clear();
         wAvgSeries.clear();
@@ -145,8 +147,10 @@ public class GuiImplemented implements GuiInterface
         wMinSeries.clear();
         rMinSeries.clear();
         progressBar.setValue(0);
+        progressBar.setString("");
         mainFrame.refreshReadMetrics(marks.readMark);
         mainFrame.refreshWriteMetrics(marks.writeMark);
+//        mainFrame.adjustSensitivity();
     }
 
     @Override

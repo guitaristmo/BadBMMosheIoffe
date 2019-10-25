@@ -4,8 +4,7 @@ import javax.swing.*;
 import java.util.List;
 
 /**
- * Class that runs the diskworker with Swing
- *
+ * Class that uses SwingWorker to run diskWorker through swingWorker
  */
 public class SwingWorkerImplemented extends SwingWorker <Boolean, DiskMark>
 {

@@ -2,10 +2,7 @@ package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
 import edu.touro.mco152.bm.persist.EM;
-import edu.touro.mco152.bm.persist.RunInterface;
-import org.eclipse.persistence.jpa.config.Entity;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +16,9 @@ import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
 import static edu.touro.mco152.bm.MyApp.KILOBYTE;
 import static edu.touro.mco152.bm.MyApp.MEGABYTE;
 
+/**
+ * Stores all the information about how to run Write Benchmark and persist it
+ */
 public class WriteBenchmark implements BenchmarkInterface
 {
     private DiskRun run;
@@ -42,7 +42,7 @@ public class WriteBenchmark implements BenchmarkInterface
     }
 
     @Override
-    public void run(int m)
+    public DiskMark run(int m)
     {
         if (configSettings.multiFile) {
             configSettings.testFile = new File(configSettings.dataDir.getAbsolutePath()
@@ -87,12 +87,12 @@ public class WriteBenchmark implements BenchmarkInterface
                 + "("+Util.displayString(mbWritten)+ "MB written in "
                 + Util.displayString(sec)+" sec)");
         wMark.updateMetrics();
-        userInterface.iPublish(wMark);
 
         run.setRunMax(wMark.getCumMax());
         run.setRunMin(wMark.getCumMin());
         run.setRunAvg(wMark.getCumAvg());
         run.setEndTime(new Date());
+        return wMark;
     }
 
     @Override
@@ -110,9 +110,9 @@ public class WriteBenchmark implements BenchmarkInterface
             System.out.println("worker: about to get em");
             em = EM.getEntityManager();
             em.getTransaction().begin();
-            em.persist(run);
-            em.getTransaction().commit();
         }
+        em.persist(run);
+        em.getTransaction().commit();
     }
 
     @Override

@@ -4,10 +4,10 @@ package edu.touro.mco152.bm;
 import java.text.DecimalFormat;
 
 /**
- *
+ *This class holds information about a single iteration of a disk benchmark
  */
-public class DiskMark {
-    
+public class DiskMark implements Mark
+{
     static DecimalFormat df = new DecimalFormat("###.###");
     
     public enum MarkType { READ,WRITE; }
@@ -114,8 +114,6 @@ public class DiskMark {
 			cumMin = rMin;
 		}
 	}
-
-
 
 	public void resetTestData() {
 		wAvg = -1;

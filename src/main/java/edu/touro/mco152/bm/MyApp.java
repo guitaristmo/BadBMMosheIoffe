@@ -16,48 +16,22 @@ import edu.touro.mco152.bm.persist.DiskRun;
 import edu.touro.mco152.bm.ui.MarkResetObject;
 
 /**
- * Primary class for global variables.
+ * Primary class for running the Benchmark
  */
 public class MyApp {
 
     private GuiInterface display;
     public PropertiesManager propManager;
     public MyDiskWorker worker;
-
+    public RunConfigSetting runConfigs;
 
     public static final String APP_CACHE_DIR = System.getProperty("user.home") + File.separator + ".jDiskMark";
     public static final String DATADIRNAME = "jDiskMarkData";
     public static final int MEGABYTE = 1024 * 1024;
     public static final int KILOBYTE = 1024;
-//    public static final int IDLE_STATE = 0;
-//    public static final int DISK_TEST_STATE = 1;
-
     public enum State {IDLE_STATE, DISK_TEST_STATE};
     public State state = State.IDLE_STATE;
 
-    // options
-//    public boolean multiFile = true;
-//    public boolean autoRemoveData = false;
-//    public boolean autoReset = true;
-//    public boolean showMaxMin = true;
-//    public boolean writeSyncEnable = true;
-
-    // run configuration
-    public RunConfigSetting runConfigs;
-//    public File locationDir = null;
-//    public File dataDir = null;
-//    public File testFile = null;
-//    public boolean readTest = false;
-//    public boolean writeTest = true;
-//    public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;
-//    public int numOfMarks = 25;      // desired number of marks
-//    public int numOfBlocks = 32;     // desired number of blocks
-//    public int blockSizeKb = 512;    // size of a block in KBs
-
-
-    /**
-     * Primary class for running the benchmark.
-     */
     public MyApp()
     {
         runConfigs = new RunConfigSetting();
@@ -137,7 +111,6 @@ public class MyApp {
 
     public void clearSavedRuns() {
         DiskRun.deleteAll();
-
         loadSavedRuns();
     }
 
@@ -190,7 +163,7 @@ public class MyApp {
         //7. start disk worker thread
         if (worker == null)
         {
-            worker = new MyDiskWorker(this, display);
+            worker = new MyDiskWorker(runConfigs, display);
             display.setWorker(worker);
         }
 
@@ -217,42 +190,6 @@ public class MyApp {
         display.iExecute();
     }
 
-//    public void updateMetrics(DiskMark mark) {
-//        if (mark.type==DiskMark.MarkType.WRITE) {
-//            if (wMax==-1 || wMax < mark.getBwMbSec()) {
-//                wMax = mark.getBwMbSec();
-//            }
-//            if (wMin==-1 || wMin > mark.getBwMbSec()) {
-//                wMin = mark.getBwMbSec();
-//            }
-//            if (wAvg==-1) {
-//                wAvg = mark.getBwMbSec();
-//            } else {
-//                int n = mark.getMarkNum();
-//                wAvg = (((double)(n-1)*wAvg)+mark.getBwMbSec())/(double)n;
-//            }
-//            mark.setCumAvg(wAvg);
-//            mark.setCumMax(wMax);
-//            mark.setCumMin(wMin);
-//        } else {
-//            if (rMax==-1 || rMax < mark.getBwMbSec()) {
-//                rMax = mark.getBwMbSec();
-//            }
-//            if (rMin==-1 || rMin > mark.getBwMbSec()) {
-//                rMin = mark.getBwMbSec();
-//            }
-//            if (rAvg==-1) {
-//                rAvg = mark.getBwMbSec();
-//            } else {
-//                int n = mark.getMarkNum();
-//                rAvg = (((double)(n-1)*rAvg)+mark.getBwMbSec())/(double)n;
-//            }
-//            mark.setCumAvg(rAvg);
-//            mark.setCumMax(rMax);
-//            mark.setCumMin(rMin);
-//        }
-//    }
-
     public void resetSequence(){worker.resetSequence();}
 
     public void resetTestData()
@@ -260,16 +197,4 @@ public class MyApp {
         MarkResetObject marks = worker.resetTestData();
         display.resetTestData(marks);
     }
-
-//    public void resetSequence() { nextMarkNumber = 1; }
-//
-//    public void resetTestData() {
-//        nextMarkNumber = 1;
-//        wAvg = -1;
-//        wMax = -1;
-//        wMin = -1;
-//        rAvg = -1;
-//        rMax = -1;
-//        rMin = -1;
-//    }
 }
