@@ -1,0 +1,48 @@
+¦[EL Fine]: server: 2019-09-23 19:10:30.492--Thread(Thread[Test worker,5,main])--Configured server platform: org.eclipse.persistence.platform.server.NoServerPlatform
+Ø[EL Config]: metadata: 2019-09-23 19:10:30.734--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The access type for the persistent class [class edu.touro.mco152.bm.persist.DiskRun] is set to [FIELD].
+à[EL Config]: metadata: 2019-09-23 19:10:30.779--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The alias name for the entity class [class edu.touro.mco152.bm.persist.DiskRun] is being defaulted to: DiskRun.
+´[EL Config]: metadata: 2019-09-23 19:10:30.795--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [ioMode] is being defaulted to: IOMODE.
+·[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [numMarks] is being defaulted to: NUMMARKS.
+³[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [runMin] is being defaulted to: RUNMIN.
+³[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [runAvg] is being defaulted to: RUNAVG.
+·[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [diskInfo] is being defaulted to: DISKINFO.
+»[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [totalMarks] is being defaulted to: TOTALMARKS.
+»[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [blockOrder] is being defaulted to: BLOCKORDER.
+¹[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [blockSize] is being defaulted to: BLOCKSIZE.
+³[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [txSize] is being defaulted to: TXSIZE.
+¹[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [numBlocks] is being defaulted to: NUMBLOCKS.
+³[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [runMax] is being defaulted to: RUNMAX.
+¹[EL Config]: metadata: 2019-09-23 19:10:30.81--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [startTime] is being defaulted to: STARTTIME.
+¬[EL Config]: metadata: 2019-09-23 19:10:30.826--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [id] is being defaulted to: ID.
+¶[EL Config]: metadata: 2019-09-23 19:10:30.827--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--The column name for element [endTime] is being defaulted to: ENDTIME.
+´[EL Info]: 2019-09-23 19:10:31.152--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--EclipseLink, version: Eclipse Persistence Services - 2.7.4.v20190115-ad5b7c6b2a
+ª[EL Fine]: connection: 2019-09-23 19:10:32.349--Thread(Thread[Test worker,5,main])--Detected database platform: org.eclipse.persistence.platform.database.JavaDBPlatform
+¤[EL Config]: connection: 2019-09-23 19:10:32.367--ServerSession(1481576739)--Connection(1879932619)--Thread(Thread[Test worker,5,main])--connecting(DatabaseLogin(
+	platform=>JavaDBPlatform
+	user name=> ""
+4	datasource URL=> "jdbc:derby:derbyDB;create=true"
+))
+¨[EL Config]: connection: 2019-09-23 19:10:32.367--ServerSession(1481576739)--Connection(1637845484)--Thread(Thread[Test worker,5,main])--Connected: jdbc:derby:derbyDB
+	User: APP
+9	Database: Apache Derby  Version: 10.13.1.1 - (1765088)
+L	Driver: Apache Derby Embedded JDBC Driver  Version: 10.13.1.1 - (1765088)
+Ñ[EL Info]: connection: 2019-09-23 19:10:32.598--ServerSession(1481576739)--Thread(Thread[Test worker,5,main])--/file:/C:/Users/Moshe/IdeaProjects/mco152a/build/classes/java/main/_jDiskMarkPU login successful
+!Available processors (cores): 8
+Free memory (bytes): 83382992
+$Maximum memory (bytes): 1892155392
+2Total memory available to JVM (bytes): 116391936
+File system root: C:\
+#Total space (bytes): 958242222080
+"Free space (bytes): 811692023808
+$Usable space (bytes): 811692023808
+Drive Type: Local Disk
+File system root: D:\
+"Total space (bytes): 26843541504
+!Free space (bytes): 24861097984
+#Usable space (bytes): 24861097984
+Drive Type: Local Disk
+File system root: F:\
+Total space (bytes): 0
+Free space (bytes): 0
+Usable space (bytes): 0
+Drive Type: CD Drive
