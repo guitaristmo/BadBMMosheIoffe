@@ -51,6 +51,7 @@ public class MyDiskWorker
 
     public boolean runBenchmark() throws Exception
     {
+        System.out.println("DW: started run");
         user.msg("Running readTest "+runConfigs.readTest+"   writeTest "+runConfigs.writeTest);
         user.msg("num files: "+runConfigs.numOfMarks+", num blks: "+runConfigs.numOfBlocks
                 +", blk size (kb): "+runConfigs.blockSizeKb+", blockSequence: "+runConfigs.blockSequence);
@@ -74,6 +75,7 @@ public class MyDiskWorker
             MarkResetObject marks = resetTestData();
             user.resetTestData(marks);
         }
+
         int startFileNum = nextMarkNumber;
 
         if(runConfigs.writeTest)
@@ -83,25 +85,22 @@ public class MyDiskWorker
             user.msg("disk info: ("+ writingBenchmark.getItemInfo()+")");
             user.setTitle(writingBenchmark.getItemInfo());
 
-
             if (!runConfigs.multiFile) {
                 runConfigs.testFile = new File(runConfigs.dataDir.getAbsolutePath()+File.separator+"testdata.jdm");
             }
 
-
-            for (int m=startFileNum; m<startFileNum+runConfigs.numOfMarks && !user.iIsCancelled(); m++)
+            for (int m = startFileNum; m<startFileNum+runConfigs.numOfMarks && !user.benchmarkIsCancelled(); m++)
             {
-                user.iPublish(writingBenchmark.run(m));
+                user.outputMark(writingBenchmark.run(m));
             }
             nextMarkNumber += runConfigs.numOfMarks;
-            writingBenchmark.persistRun(firstPass);
-            writingBenchmark.addRunToGui();
+            writingBenchmark.runFinished(firstPass);
             firstPass = false;
         }
 
 
         // try renaming all files to clear catch
-        if (runConfigs.readTest && runConfigs.writeTest && !user.iIsCancelled()) {
+        if (runConfigs.readTest && runConfigs.writeTest && !user.benchmarkIsCancelled()) {
             user.showFileRenamingMessage();
         }
 
@@ -112,13 +111,12 @@ public class MyDiskWorker
             readingBenchmark.initializeRun();
 
 
-            for (int m = startFileNum; m < startFileNum + runConfigs.numOfMarks && !user.iIsCancelled(); m++)
+            for (int m = startFileNum; m < startFileNum + runConfigs.numOfMarks && !user.benchmarkIsCancelled(); m++)
             {
-                user.iPublish(readingBenchmark.run(m));
+                user.outputMark(readingBenchmark.run(m));
             }
             nextMarkNumber += runConfigs.numOfMarks;
-            readingBenchmark.persistRun(firstPass);
-            readingBenchmark.addRunToGui();
+            readingBenchmark.runFinished(firstPass);
             firstPass = false;
         }
         return true;
@@ -137,14 +135,14 @@ public class MyDiskWorker
     {
         wUnitsComplete++;
         unitsComplete = rUnitsComplete + wUnitsComplete;
-        user.iSetProgress((int)((float)unitsComplete/(float)unitsTotal * 100f));
+        user.updateProgress((int)((float)unitsComplete/(float)unitsTotal * 100f));
     }
 
     public void incrementReadUnits()
     {
         rUnitsComplete++;
         unitsComplete = rUnitsComplete + wUnitsComplete;
-        user.iSetProgress((int)((float)unitsComplete/(float)unitsTotal * 100f));
+        user.updateProgress((int)((float)unitsComplete/(float)unitsTotal * 100f));
     }
 
 }

@@ -2,9 +2,6 @@
 package edu.touro.mco152.bm.persist;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -28,12 +25,10 @@ import javax.persistence.TemporalType;
 @NamedQuery(name="DiskRun.findAll",
     query="SELECT d FROM DiskRun d")
 })
-public class DiskRun implements Serializable {
+public class DiskRun extends Run implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	static final DecimalFormat DF = new DecimalFormat("###.##");
-    static final DateFormat DATE_FORMAT = new SimpleDateFormat("EEE, MMM d HH:mm:ss");
-    
+
     static public enum IOMode { READ, WRITE, READ_WRITE; }
     static public enum BlockSequence {SEQUENTIAL, RANDOM; }
 
@@ -63,13 +58,6 @@ public class DiskRun implements Serializable {
     @Column
 	private
     long txSize = 0;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column
-    Date startTime;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column
-	private
-    Date endTime = null;
     @Column
     int totalMarks = 0;
     @Column
@@ -98,11 +86,7 @@ public class DiskRun implements Serializable {
     }
     
     // display friendly methods
-    
-    public String getStartTimeString() {
-        return DATE_FORMAT.format(startTime);
-    }
-    
+
     public String getMin() {
         return getRunMin() == -1 ? "- -" : DF.format(getRunMin());
     }
@@ -126,16 +110,7 @@ public class DiskRun implements Serializable {
     public void SetAvg(double avg) {
         setRunAvg(avg);
     }
-    
-    public String getDuration() {
-        if (getEndTime() == null) {
-            return "unknown";
-        }
-        long duration = getEndTime().getTime() - startTime.getTime();
-        long diffSeconds = duration / 1000 % 60;
-        return String.valueOf(diffSeconds) + "s";
-    }
-    
+
     // basic getters and setters
     
     public Long getId() {
@@ -236,13 +211,5 @@ public class DiskRun implements Serializable {
 
 	public void setRunAvg(double runAvg) {
 		this.runAvg = runAvg;
-	}
-
-	public Date getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
 	}
 }

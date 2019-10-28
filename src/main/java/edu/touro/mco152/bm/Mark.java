@@ -1,5 +1,7 @@
 package edu.touro.mco152.bm;
 
+import java.text.DecimalFormat;
+
 /**
  * This represents a mark
  * This is just used to pass around diskMark in this setup
@@ -9,7 +11,9 @@ package edu.touro.mco152.bm;
  * Because the Gui is hard coded to use data in DiskMark, I couldn't actually
  * have MainFrame use Mark instead of DiskMark
  */
-public interface Mark
+public abstract class Mark
 {
+    static DecimalFormat df = new DecimalFormat("###.###");
 
+    public enum MarkType { READ,WRITE; }
 }

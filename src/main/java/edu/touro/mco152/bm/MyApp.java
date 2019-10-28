@@ -120,9 +120,9 @@ public class MyApp {
         System.out.println("loading stored run data");
         System.out.println("XXXX Java version is "  + System.getProperty("java.version"));
 
-//        DiskRun.findAll().stream().forEach((DiskRun run) -> {
-//            display.addRun(run);
-//        });
+        DiskRun.findAll().stream().forEach((DiskRun run) -> {
+            display.addRun(run);
+        });
     }
 
     public void clearSavedRuns() {
@@ -135,7 +135,7 @@ public class MyApp {
             display.msg("worker is null abort...");
             return;
         }
-        display.iCancel(true);
+        display.cancelBenchmark(true);
     }
 
     public void startBenchmark() {
@@ -149,14 +149,14 @@ public class MyApp {
         }
 
         //2. check can write to location
-        if (runConfigs.locationDir.canWrite() == false) {
+        if (!runConfigs.locationDir.canWrite()) {
             display.msg("Selected directory can not be written to... aborting");
             return;
         }
 
         //3. update state
         state = State.DISK_TEST_STATE;
-        display.adjustSensitivity();
+        display.refreshScreen();
 
         //4. create data dir reference
         runConfigs.dataDir = new File (runConfigs.locationDir.getAbsolutePath()+File.separator+DATADIRNAME);
@@ -179,20 +179,21 @@ public class MyApp {
             worker = new MyDiskWorker(runConfigs, display);
             display.setWorker(worker);
         }
+        System.out.println("MA: about to call display.iAddPRopChang...");
 
         display.iAddPropertyChangeListener((final PropertyChangeEvent event) ->
         {
             switch (event.getPropertyName()) {
                 case "progress":
                     int value = (Integer)event.getNewValue();
-                    display.iSetProgress(value);
+                    display.updateProgress(value);
                     long kbProcessed = (value) * this.runConfigs.targetTxSizeKb() / 100;
-                    display.iSetProgressBarString(String.valueOf(kbProcessed)+" / "+String.valueOf(this.runConfigs.targetTxSizeKb()));
+                    display.setProgressString(String.valueOf(kbProcessed)+" / "+String.valueOf(this.runConfigs.targetTxSizeKb()));
                     break;
                 case "state":
                     switch ((StateValue) event.getNewValue()) {
                         case STARTED:
-                            display.iSetProgressBarString("0 / "+String.valueOf(this.runConfigs.targetTxSizeKb()));
+                            display.setProgressString("0 / "+String.valueOf(this.runConfigs.targetTxSizeKb()));
                             break;
                         case DONE:
                             break;
@@ -200,7 +201,7 @@ public class MyApp {
                     break;
             }
         });
-        display.iExecute();
+        display.startBenchmark();
     }
 
     public void resetSequence(){worker.resetSequence();}

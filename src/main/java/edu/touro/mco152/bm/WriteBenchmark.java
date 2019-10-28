@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
+import static edu.touro.mco152.bm.Mark.MarkType.WRITE;
 import static edu.touro.mco152.bm.MyApp.KILOBYTE;
 import static edu.touro.mco152.bm.MyApp.MEGABYTE;
 
@@ -103,7 +103,7 @@ public class WriteBenchmark implements BenchmarkInterface
     }
 
     @Override
-    public void persistRun(boolean firstPass)
+    public void runFinished(boolean firstPass)
     {
         if(firstPass)
         {
@@ -113,10 +113,10 @@ public class WriteBenchmark implements BenchmarkInterface
         }
         em.persist(run);
         em.getTransaction().commit();
+        addRunToGui();
     }
 
-    @Override
-    public void addRunToGui() { userInterface.addRun(run); }
+    private void addRunToGui() { userInterface.addRun(run); }
 
     @Override
     public void initializeRun()

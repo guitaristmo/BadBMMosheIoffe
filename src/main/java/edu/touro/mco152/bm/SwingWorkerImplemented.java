@@ -59,7 +59,7 @@ public class SwingWorkerImplemented extends SwingWorker <Boolean, DiskMark>
             Util.deleteDirectory(mainApp.runConfigs.dataDir);
         }
         mainApp.state = MyApp.State.IDLE_STATE;
-        mainGui.adjustSensitivity();
+        mainGui.refreshScreen();
     }
 }
 

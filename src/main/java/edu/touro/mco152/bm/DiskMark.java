@@ -6,13 +6,8 @@ import java.text.DecimalFormat;
 /**
  *This class holds information about a single iteration of a disk benchmark
  */
-public class DiskMark implements Mark
+public class DiskMark extends Mark
 {
-    static DecimalFormat df = new DecimalFormat("###.###");
-    
-    public enum MarkType { READ,WRITE; }
-
-
 	public double wMax = -1, wMin = -1, wAvg = -1;
 	public double rMax = -1, rMin = -1, rAvg = -1;
 

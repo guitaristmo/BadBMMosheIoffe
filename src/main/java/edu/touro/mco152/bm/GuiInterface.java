@@ -1,42 +1,38 @@
 package edu.touro.mco152.bm;
 
-import edu.touro.mco152.bm.persist.DiskRun;
+import edu.touro.mco152.bm.persist.Run;
 import edu.touro.mco152.bm.ui.MarkResetObject;
 
 import java.beans.PropertyChangeListener;
 
 /**
  * This represents all user interaction that
- * diskworker and app will ever do
+ * diskworker and app will ever have
+ * as well as how to run the benchmark - Swing...
  */
 public interface GuiInterface
 {
-    //from Gui
-    void updateLegend();
-    void resetTestData(MarkResetObject marks);
-
-
-    //for DiskWorker
+//output and user related
     void setTitle(String title);
-    void addRun(DiskRun run);
-    void showFileRenamingMessage();
-
-
-    //from Swing Worker
-    boolean iIsCancelled();
-    void iPublish(Object... chunks);
-    void iCancel(boolean cancel);
-    void iAddPropertyChangeListener(PropertyChangeListener listener);
-    void iSetProgress(int progress);
-    void iSetProgressBarString(String progress);
-    void iExecute();
-
-
-    //from app
+    void updateLegend();
     void msg(String message);
-    void init();
+    void outputMark(Object... chunks);
     void clearRuns();
-    void adjustSensitivity();
-    void setWorker(MyDiskWorker worker);
+    void refreshScreen();
+    void addRun(Run run);
+    void showFileRenamingMessage();
+    void iAddPropertyChangeListener(PropertyChangeListener listener);
 
+    void updateProgress(int progress);
+    void setProgressString(String progress);
+
+//cancel related
+    boolean benchmarkIsCancelled();
+    void cancelBenchmark(boolean cancel);
+
+// related to running the benchmark
+    void startBenchmark();
+    void init();
+    void setWorker(MyDiskWorker worker);
+    void resetTestData(MarkResetObject marks);
 }

@@ -11,13 +11,11 @@ public interface BenchmarkInterface
 {
     Mark run(int loopIterationCounter);
 
-    void addRunToGui();
-
     void initializeRun();
 
     String getItemInfo();
 
-    void persistRun(boolean firstPass);
+    void runFinished(boolean firstPass);
 
     DiskMark resetTestData();
 

@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Date;
-import static edu.touro.mco152.bm.DiskMark.MarkType.READ;
+import static edu.touro.mco152.bm.Mark.MarkType.READ;
 import static edu.touro.mco152.bm.MyApp.KILOBYTE;
 import static edu.touro.mco152.bm.MyApp.MEGABYTE;
 
@@ -85,16 +85,17 @@ public class ReadBenchmark implements BenchmarkInterface
     }
 
     @Override
-    public void persistRun(boolean firstPass)
+    public void runFinished(boolean firstPass)
     {
         if(firstPass)
-    {
-        System.out.println("worker: about to get em");
-        em = EM.getEntityManager();
-        em.getTransaction().begin();
-    }
+        {
+            System.out.println("worker: about to get em");
+            em = EM.getEntityManager();
+            em.getTransaction().begin();
+        }
         em.persist(run);
         em.getTransaction().commit();
+        addRunToGui();
     }
 
     @Override
@@ -127,6 +128,5 @@ public class ReadBenchmark implements BenchmarkInterface
         return run.getDiskInfo();
     }
 
-    @Override
-    public void addRunToGui() { userInterface.addRun(run); }
+    private void addRunToGui() { userInterface.addRun(run); }
 }

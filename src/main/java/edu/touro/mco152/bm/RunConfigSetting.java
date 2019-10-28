@@ -6,8 +6,10 @@ import java.io.File;
 /**
  * This class stores configuration settings for Disk tests
  *
- * SRP - theses settings are not related to the process of how to run a
+ * SRP - theses settings are not related to the process of how to set up and run a
  * benchmark, and had not business being in App. Therefore, they get their own class.
+ *
+ * These are settings which are universal to most tests, and therefore were left as they are
  */
 public class RunConfigSetting
 {
@@ -30,5 +32,4 @@ public class RunConfigSetting
     public long targetMarkSizeKb() { return blockSizeKb * numOfBlocks; }
 
     public long targetTxSizeKb() { return blockSizeKb * numOfBlocks * numOfMarks; }
-
 }

@@ -1,6 +1,7 @@
 package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.persist.DiskRun;
+import edu.touro.mco152.bm.persist.Run;
 import edu.touro.mco152.bm.ui.MarkResetObject;
 import edu.touro.mco152.bm.ui.MyMainFrame;
 import edu.touro.mco152.bm.ui.MyRunPanel;
@@ -161,9 +162,9 @@ public class GuiImplemented implements GuiInterface
     }
 
     @Override
-    public void addRun(DiskRun run)
+    public void addRun(Run run)
     {
-        runPanel.addRun(run);
+        runPanel.addRun((DiskRun) run);
     }
 
     @Override
@@ -179,7 +180,7 @@ public class GuiImplemented implements GuiInterface
     }
 
     @Override
-    public boolean iIsCancelled() { return mySwing.isCancelled(); }
+    public boolean benchmarkIsCancelled() { return mySwing.isCancelled(); }
 
     @Override
     public void clearRuns()
@@ -201,22 +202,22 @@ public class GuiImplemented implements GuiInterface
     }
 
     @Override
-    public void iSetProgressBarString(String progress)
+    public void setProgressString(String progress)
     {
         progressBar.setString(progress);
     }
 
     @Override
-    public void iPublish(Object... marks) { mySwing.uPublish(marks); }
+    public void outputMark(Object... marks) { mySwing.uPublish(marks); }
 
     @Override
-    public void iCancel(boolean cancel) { mySwing.cancel(cancel); }
+    public void cancelBenchmark(boolean cancel) { mySwing.cancel(cancel); }
 
     @Override
     public void iAddPropertyChangeListener(PropertyChangeListener listener) { mySwing.addPropertyChangeListener(listener); }
 
     @Override
-    public void iSetProgress(int progress)
+    public void updateProgress(int progress)
     {
         mySwing.uSetProgress(progress);
     }
@@ -263,7 +264,7 @@ public class GuiImplemented implements GuiInterface
     }
 
     @Override
-    public void adjustSensitivity()
+    public void refreshScreen()
     {
         mainFrame.adjustSensitivity();
     }
@@ -276,7 +277,7 @@ public class GuiImplemented implements GuiInterface
     }
 
     @Override
-    public void iExecute()
+    public void startBenchmark()
     {
         if(!firstRun)
         {
