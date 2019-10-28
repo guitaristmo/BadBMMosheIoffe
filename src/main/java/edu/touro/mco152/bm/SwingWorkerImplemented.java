@@ -5,6 +5,9 @@ import java.util.List;
 
 /**
  * Class that uses SwingWorker to run diskWorker through swingWorker
+ * SRP - not all the GUI related work has to be done through swing, so even
+ * in my implementation of GuiInterface, I separated out the Swing parts
+ * from the rest of the user interaction.
  */
 public class SwingWorkerImplemented extends SwingWorker <Boolean, DiskMark>
 {

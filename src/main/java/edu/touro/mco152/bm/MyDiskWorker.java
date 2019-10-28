@@ -7,10 +7,24 @@ import java.io.File;
 
 /**
  * Class for benchmarking a disk.
+ * (I started explaining my restructuring in MyApp's first comment, so best to begin reading there)
+ *
  * It is a platform for benchmarking things which implement BenchmarkInterfaces
  * using any user interface which extends GuiInterface, and receiving data about
  * the test from runConfigs (necessary because of the current GUI)
+ *
+ * SRP: this class only runs a benchmark nothing else.
+ * DIP: no longer dependant on GUI, and MainFrame, and Swing: it is free to be used with any implementation of GuiInterface.
+ * DIP: no longer dependant on DiskRun or DiskMark: it can be used to benchmark anything that implements the Benchmark interface.
+ *
+ * Here I will explain the 2nd major benefit/focus of the restructuring:
+ * Diskworker can now be used to benchmark other devices.
+ * Benchmark uses two classes/interfaces: RunConfigSettings and BenchmarkInterface, for running benchmark.
+ * RunConfigSettings contains (fairly universal) settings for the benchmark, and BenchmarkInterface, which contains information
+ * about how to actually perform the benchmark. Therefore, to benchmark, another device, one would simply write a new class
+ * which extends Benchmark interface, and have diskworker run that.
  */
+
 public class MyDiskWorker
 {
     private GuiInterface user;

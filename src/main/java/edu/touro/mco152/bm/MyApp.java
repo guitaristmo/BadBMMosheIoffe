@@ -17,6 +17,22 @@ import edu.touro.mco152.bm.ui.MarkResetObject;
 
 /**
  * Primary class for running the Benchmark
+ * This class does the program setup - connecting the UI, (which is just an interface and different ones can be used), the config settings,
+ * and running diskworker.
+ *
+ * I will explain here most of the benefits of my program restructuring:
+ * Part 1: Remove the Swing and Gui from the benchmarking process.
+ * DiskWorker and App have been restructured to have no Gui or Swing references, which
+ * benefits us in 2 ways:
+ * SRP compliant - less reason to change - they are only responsible for running the benchmark (I will explain
+ * each in more detail later), and not for displaying it or choosing in what threads to run the benchmark.
+ * DIP - The benchmarking software is no longer reliant on Swing or on a GUI. Any implementation of the GuiInterface will
+ * suffice for App and Diskworker to run. Now, you can just write a new class that implements GuiInterface as a console app, and the
+ * program will still run fine.
+ *
+ * Part 2: Remove Disk from Diskworker.
+ * Diskworker is no longer limited to benchmarking disks: I will explain in greater detail in Diskworker
+ *
  */
 public class MyApp {
 
@@ -128,7 +144,6 @@ public class MyApp {
         if (state == State.DISK_TEST_STATE) {
             //if (!worker.isCancelled() && !worker.isDone()) {
             display.msg("Test in progress, aborting...");
-            System.out.println("AppInstance: Other test still active");
             return;
             //}
         }
@@ -141,8 +156,6 @@ public class MyApp {
 
         //3. update state
         state = State.DISK_TEST_STATE;
-        System.out.println("AppInstance: started new benchmark");
-
         display.adjustSensitivity();
 
         //4. create data dir reference

@@ -5,6 +5,9 @@ import java.io.File;
 
 /**
  * This class stores configuration settings for Disk tests
+ *
+ * SRP - theses settings are not related to the process of how to run a
+ * benchmark, and had not business being in App. Therefore, they get their own class.
  */
 public class RunConfigSetting
 {

@@ -12,7 +12,7 @@ import static edu.touro.mco152.bm.MyApp.KILOBYTE;
 import static edu.touro.mco152.bm.MyApp.MEGABYTE;
 
 /**
- * Stores all the information about how to run Write Benchmark and persist it
+ * Stores all the information about how to run Read Benchmark and persist it
  */
 public class ReadBenchmark implements BenchmarkInterface
 {
